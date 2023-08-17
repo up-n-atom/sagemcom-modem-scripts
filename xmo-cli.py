@@ -1,7 +1,7 @@
 import asyncclick as click
 from enum import Enum
 from ipaddress import IPv4Address
-from json
+import json
 from sagemcom_api.client import SagemcomClient
 from sagemcom_api.enums import EncryptionMethod
 
