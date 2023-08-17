@@ -70,6 +70,45 @@ async def get_wan_mode(ctx: click.Context) -> None:
     await ctx.invoke(get_value, path='Device/Services/BellNetworkCfg/WanMode')
 
 
+@cli.command()
+@click.pass_context
+async def get_dns(ctx: click.Context) -> None:
+    await ctx.invoke(get_value, path='Device/DNS')
+
+
+def validate_dns_servers(ctx, param, value):
+    if isinstance(value, tuple):
+        return value
+    dns_servers = value.split(' ', maxsplit=1)
+    for i, dns_server in enumerate(dns_servers):
+        try:
+            dns_servers[i] = IPv4Address(dns_server)
+        except:
+            raise click.BadParameter(f"Invalid IPv4 address: {dns_server}")
+    return tuple(dns_servers)
+
+
+@cli.command()
+@click.option('--dns-servers', type=click.UNPROCESSED, callback=validate_dns_servers, prompt='DNS servers seperated by a space')
+@click.pass_obj
+async def set_dns(client: SagemcomClient, dns_servers: tuple[IPv4Address]) -> None:
+    for i, dns_server in enumerate(dns_servers, start=1):
+        try:
+            await client.set_value_by_xpath(f"Device/DNS/Relay/Forwardings/Forwarding[@uid={i}]/DNSServer", dns_server)
+            if dns_server.is_private:
+                await client.set_value_by_xpath(
+                    f"Device/DNS/Relay/Forwardings/Forwarding[@uid={i}]/Interface",
+                    'Device/IP/Interfaces/Interface[IP_BR_LAN]'
+                )
+            elif dns_server.is_global:
+                await client.set_value_by_xpath(
+                    f"Device/DNS/Relay/Forwardings/Forwarding[@uid={i}]/Interface",
+                    'Device/IP/Interfaces/Interface[IP_DATA]'
+                )
+        except Exception as e:
+            click.echo(e, err=True)
+
+
 if __name__ == '__main__':
     cli(_anyio_backend='asyncio')
 
