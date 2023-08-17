@@ -95,16 +95,13 @@ async def set_dns_servers(client: SagemcomClient, dns_servers: tuple[IPv4Address
     for i, dns_server in enumerate(dns_servers, start=1):
         try:
             await client.set_value_by_xpath(f"Device/DNS/Relay/Forwardings/Forwarding[@uid={i}]/DNSServer", dns_server)
+            iface = 'Device/IP/Interfaces/Interface[IP_DATA]'
             if dns_server.is_private:
-                await client.set_value_by_xpath(
-                    f"Device/DNS/Relay/Forwardings/Forwarding[@uid={i}]/Interface",
-                    'Device/IP/Interfaces/Interface[IP_BR_LAN]'
-                )
-            elif dns_server.is_global:
-                await client.set_value_by_xpath(
-                    f"Device/DNS/Relay/Forwardings/Forwarding[@uid={i}]/Interface",
-                    'Device/IP/Interfaces/Interface[IP_DATA]'
-                )
+                iface = 'Device/IP/Interfaces/Interface[IP_BR_LAN]
+            await client.set_value_by_xpath(
+                f"Device/DNS/Relay/Forwardings/Forwarding[@uid={i}]/Interface",
+                iface
+            )
         except Exception as e:
             click.echo(e, err=True)
             break
