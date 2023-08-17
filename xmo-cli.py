@@ -1,7 +1,7 @@
 import asyncclick as click
 from enum import Enum
 from ipaddress import IPv4Address
-from json import dumps
+from json
 from sagemcom_api.client import SagemcomClient
 from sagemcom_api.enums import EncryptionMethod
 
@@ -48,7 +48,7 @@ async def get_value(ctx: click.Context, path: str) -> None:
     except Exception as e:
         click.echo(e, err=True)
     else:
-        click.echo(dumps(value, indent=2))
+        click.echo(json.dumps(value, indent=2))
 
 
 @cli.command()
