@@ -110,7 +110,7 @@ async def set_dns_servers(client: SagemcomClient, dns_servers: tuple[IPv4Address
             break
     else:
         try:
-            await client.set_value_by_xpath('Device/DNS/Relay/Enable', True)
+            await client.set_value_by_xpath('Device/DNS/Client/Servers/Server[@uid=1]/Enable', True)
         except Exception as e:
             click.echo(e, err=True)
 
