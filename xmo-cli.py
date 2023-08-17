@@ -97,7 +97,7 @@ async def set_dns_servers(client: SagemcomClient, dns_servers: tuple[IPv4Address
             await client.set_value_by_xpath(f"Device/DNS/Relay/Forwardings/Forwarding[@uid={i}]/DNSServer", dns_server)
             iface = 'Device/IP/Interfaces/Interface[IP_DATA]'
             if dns_server.is_private:
-                iface = 'Device/IP/Interfaces/Interface[IP_BR_LAN]
+                iface = 'Device/IP/Interfaces/Interface[IP_BR_LAN]'
             await client.set_value_by_xpath(
                 f"Device/DNS/Relay/Forwardings/Forwarding[@uid={i}]/Interface",
                 iface
