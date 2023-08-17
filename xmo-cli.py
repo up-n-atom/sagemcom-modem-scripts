@@ -91,7 +91,7 @@ def validate_dns_servers(ctx, param, value):
 @cli.command()
 @click.option('--dns-servers', type=click.UNPROCESSED, callback=validate_dns_servers, prompt='DNS servers seperated by a space')
 @click.pass_obj
-async def set_dns(client: SagemcomClient, dns_servers: tuple[IPv4Address]) -> None:
+async def set_dns_servers(client: SagemcomClient, dns_servers: tuple[IPv4Address]) -> None:
     for i, dns_server in enumerate(dns_servers, start=1):
         try:
             await client.set_value_by_xpath(f"Device/DNS/Relay/Forwardings/Forwarding[@uid={i}]/DNSServer", dns_server)
@@ -107,7 +107,12 @@ async def set_dns(client: SagemcomClient, dns_servers: tuple[IPv4Address]) -> No
                 )
         except Exception as e:
             click.echo(e, err=True)
-
+            break
+    else:
+         try:
+             await client.set_value_by_xpath(f"Device/DNS/Relay/Enable", True)
+        except Exception as e:
+            click.echo(e, err=True)
 
 if __name__ == '__main__':
     cli(_anyio_backend='asyncio')
