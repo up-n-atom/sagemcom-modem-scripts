@@ -29,17 +29,18 @@ class EnumChoice(click.Choice):
 @click.option('-a', '--authentication-method',
               default=EncryptionMethod.SHA512, type=EnumChoice(EncryptionMethod),
               help='Authentication method')
-async def main(host: str, username: str, password: str, authentication_method: EncryptionMethod) -> None:
-    async with SagemcomClient(**locals(), ssl=True, keep_keys=True) as client:
-        try:
-            await client.login()
-
-            wanmode = await client.get_value_by_xpath(XPATH_DEVICE_SERVICES_BELLNETWORKCFG_WANMODE)
-        except Exception as e:
-            print(e)
-        else:
-            print(f"WAN Mode: {wanmode}")
+@click.pass_context
+async def main(ctx: click.Context, host: str, username: str, password: str, authentication_method: EncryptionMethod) -> None:
+    ctx.obj = client = await ctx.with_async_resource(
+        SagemcomClient(host, username, password, authentication_method, ssl=True, keep_keys=True)
+    )
+    try:
+        await client.login()
+        wan_mode = await client.get_value_by_xpath(XPATH_DEVICE_SERVICES_BELLNETWORKCFG_WANMODE)
+    except Exception as e:
+        raise click.Abort(e)
+    else:
+        click.echo(f"WAN Mode: {wan_mode}")
 
 if __name__ == '__main__':
     main(_anyio_backend='asyncio')
-
