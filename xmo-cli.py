@@ -76,13 +76,13 @@ async def get_dns(ctx: click.Context) -> None:
     await ctx.invoke(get_value, path='Device/DNS')
 
 
-def validate_dns_servers(ctx, param, value):
+def validate_dns_servers(ctx, param, value) -> tuple[IPv4Address]:
     if isinstance(value, tuple):
         return value
-    dns_servers = value.split(' ', maxsplit=1)
-    for i, dns_server in enumerate(dns_servers):
+    dns_servers = set()
+    for dns_server in value.split(' ', maxsplit=1):
         try:
-            dns_servers[i] = IPv4Address(dns_server)
+            dns_servers.add(IPv4Address(dns_server))
         except:
             raise click.BadParameter(f"Invalid IPv4 address: {dns_server}")
     return tuple(dns_servers)
