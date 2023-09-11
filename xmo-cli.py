@@ -108,6 +108,7 @@ async def set_dns_servers(client: SagemcomClient, dns_servers: tuple[IPv4Address
         except Exception as e:
             click.echo(e, err=True)
 
+
 if __name__ == '__main__':
     cli(_anyio_backend='asyncio')
 
