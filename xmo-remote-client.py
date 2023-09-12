@@ -6,6 +6,7 @@ from ipaddress import IPv4Address
 import json
 from sagemcom_api.client import SagemcomClient
 from sagemcom_api.enums import EncryptionMethod
+from typing import Any
 
 
 class EnumChoice(click.Choice):
@@ -84,7 +85,7 @@ async def get_dns(ctx: click.Context) -> None:
     await ctx.invoke(get_value, path='Device/DNS')
 
 
-def validate_dns_servers(ctx: click.Context, param: str, value: any) -> tuple[IPv4Address]:
+def validate_dns_servers(ctx: click.Context, param: str, value: Any) -> tuple[IPv4Address]:
     if isinstance(value, tuple):
         return value
     dns_servers = set()
