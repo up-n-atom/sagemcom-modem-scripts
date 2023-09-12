@@ -84,7 +84,7 @@ async def get_dns(ctx: click.Context) -> None:
     await ctx.invoke(get_value, path='Device/DNS')
 
 
-def validate_dns_servers(ctx, param, value) -> tuple[IPv4Address]:
+def validate_dns_servers(ctx: click.Context, param: str, value: any) -> tuple[IPv4Address]:
     if isinstance(value, tuple):
         return value
     dns_servers = set()
