@@ -107,7 +107,7 @@ async def set_dns_servers(client: SagemcomClient, dns_servers: tuple[IPv4Address
             if 'uid' in forward and \
                'Alias' in forward and forward['Alias'].startswith('IPCP') and \
                'Interface' in forward and forward['Interface'].endswith('[IP_DATA]') and \
-               'Enable' in forward and not forward['Enable']}
+               'Enable' in forward and forward['Enable']}
         statics = {forward['uid'] for forward in forwards \
             if 'uid' in forward and \
                'Alias' in forward and forward['Alias'].startswith('STATIC') and \
