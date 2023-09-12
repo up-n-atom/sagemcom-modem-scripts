@@ -1,3 +1,5 @@
+from aiohttp import ClientSession, ClientTimeout
+from aiohttp.connector import TCPConnector
 import asyncclick as click
 from enum import Enum
 from ipaddress import IPv4Address
@@ -29,7 +31,13 @@ class EnumChoice(click.Choice):
 @click.pass_context
 async def cli(ctx: click.Context, host: str, username: str, password: str, authentication_method: EncryptionMethod) -> None:
     ctx.obj = client = await ctx.with_async_resource(
-        SagemcomClient(host, username, password, authentication_method, ssl=True, keep_keys=True)
+        SagemcomClient(host, username, password, authentication_method,
+            ClientSession(
+                headers={"User-Agent": "XMO_REMOTE_CLIENT/1.0.0"},
+                timeout=ClientTimeout(),
+                connector=TCPConnector(ssl=True),
+            ), True, keep_keys=True
+        )
     )
     try:
         await client.login()
