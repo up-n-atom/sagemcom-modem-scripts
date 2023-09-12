@@ -92,21 +92,20 @@ def validate_dns_servers(ctx, param, value) -> tuple[IPv4Address]:
 @click.option('--dns-servers', type=click.UNPROCESSED, callback=validate_dns_servers, prompt='DNS servers seperated by a space')
 @click.pass_obj
 async def set_dns_servers(client: SagemcomClient, dns_servers: tuple[IPv4Address]) -> None:
-    for i, dns_server in enumerate(dns_servers, start=1):
-        try:
+    try:
+        # disable IPCP servers
+        for i in range(3, 5):
+            await client.set_value_by_xpath(f"Device/DNS/Relay/Forwardings/Forwarding[@uid={i}]/Enable", False)
+        # set and enable manual servers
+        for i, dns_server in enumerate(dns_servers, start=1):
             await client.set_value_by_xpath(f"Device/DNS/Relay/Forwardings/Forwarding[@uid={i}]/DNSServer", dns_server)
             await client.set_value_by_xpath(
                 f"Device/DNS/Relay/Forwardings/Forwarding[@uid={i}]/Interface",
                 'Device/IP/Interfaces/Interface[IP_BR_LAN]' if dns_server.is_private else 'Device/IP/Interfaces/Interface[IP_DATA]'
             )
-        except Exception as e:
-            click.echo(e, err=True)
-            break
-    else:
-        try:
-            await client.set_value_by_xpath('Device/DNS/Client/Servers/Server[@uid=1]/Enable', True)
-        except Exception as e:
-            click.echo(e, err=True)
+            await client.set_value_by_xpath(f"Device/DNS/Relay/Forwardings/Forwarding[@uid={i}]/Enable", True)
+    except Exception as e:
+        click.echo(e, err=True)
 
 
 if __name__ == '__main__':
