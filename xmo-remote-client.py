@@ -102,17 +102,25 @@ def validate_dns_servers(ctx: click.Context, param: str, value: Any) -> tuple[IP
 @click.pass_obj
 async def set_dns_servers(client: SagemcomClient, dns_servers: tuple[IPv4Address]) -> None:
     try:
-        # disable IPCP servers
-        for i in range(3, 5):
-            await client.set_value_by_xpath(f"Device/DNS/Relay/Forwardings/Forwarding[@uid={i}]/Enable", False)
-        # set and enable manual servers
-        for i, dns_server in enumerate(dns_servers, start=1):
-            await client.set_value_by_xpath(f"Device/DNS/Relay/Forwardings/Forwarding[@uid={i}]/DNSServer", dns_server)
+        forwards = await client.get_value_by_xpath('Device/DNS/Relay/Forwardings')
+        autos = {forward['uid'] for forward in forwards \
+            if 'uid' in forward and \
+               'Alias' in forward and forward['Alias'].startswith('IPCP') and \
+               'Interface' in forward and forward['Interface'].endswith('[IP_DATA]') and \
+               'Enable' in forward and not forward['Enable']}
+        statics = {forward['uid'] for forward in forwards \
+            if 'uid' in forward and \
+               'Alias' in forward and forward['Alias'].startswith('STATIC') and \
+               'Interface' in forward and forward['Interface'].endswith(('[IP_DATA]', '[IP_BR_LAN]'))}
+        for uid in autos:
+            await client.set_value_by_xpath(f"Device/DNS/Relay/Forwardings/Forwarding[@uid={uid}]/Enable", False)
+        for uid, dns_server in zip(statics, dns_servers):
+            await client.set_value_by_xpath(f"Device/DNS/Relay/Forwardings/Forwarding[@uid={uid}]/DNSServer", dns_server)
             await client.set_value_by_xpath(
-                f"Device/DNS/Relay/Forwardings/Forwarding[@uid={i}]/Interface",
-                'Device/IP/Interfaces/Interface[IP_BR_LAN]' if dns_server.is_private else 'Device/IP/Interfaces/Interface[IP_DATA]'
+                 f"Device/DNS/Relay/Forwardings/Forwarding[@uid={uid}]/Interface",
+                 'Device/IP/Interfaces/Interface[IP_BR_LAN]' if dns_server.is_private else 'Device/IP/Interfaces/Interface[IP_DATA]'
             )
-            await client.set_value_by_xpath(f"Device/DNS/Relay/Forwardings/Forwarding[@uid={i}]/Enable", True)
+            await client.set_value_by_xpath(f"Device/DNS/Relay/Forwardings/Forwarding[@uid={uid}]/Enable", True)
     except Exception as e:
         click.echo(e, err=True)
 
