@@ -1,0 +1,4 @@
+host: 192.168.2.1
+username: admin
+password: admin
+authentication_method: MD5

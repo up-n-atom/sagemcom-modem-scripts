@@ -4,9 +4,11 @@ import asyncclick as click
 from enum import Enum
 from ipaddress import IPv4Address
 import json
+import os
 from sagemcom_api.client import SagemcomClient
 from sagemcom_api.enums import EncryptionMethod
 from typing import Any
+import yaml
 
 
 class EnumChoice(click.Choice):
@@ -25,7 +27,7 @@ class EnumChoice(click.Choice):
 @click.group(chain=True)
 @click.option('-H', '--host', default='192.168.2.1', help='Hostname or host IP')
 @click.option('-u', '--username', default='admin', help='Administrator username')
-@click.option('-p', '--password', required=True, help='Administrator password')
+@click.option('-p', '--password', required=True, help='Administrator password', prompt=True)
 @click.option('-a', '--authentication-method',
               default=EncryptionMethod.SHA512, type=EnumChoice(EncryptionMethod),
               help='Authentication method')
@@ -126,5 +128,9 @@ async def set_dns_servers(client: SagemcomClient, dns_servers: tuple[IPv4Address
 
 
 if __name__ == '__main__':
-    cli(_anyio_backend='asyncio')
+    config = dict()
+    if os.path.isfile('config.yaml'):
+        with open('config.yaml') as f:
+            config = yaml.safe_load(f)
+    cli(default_map=config, _anyio_backend='asyncio')
 
