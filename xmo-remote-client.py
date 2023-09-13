@@ -89,6 +89,8 @@ async def get_dns(ctx: click.Context) -> None:
 def validate_dns_servers(ctx: click.Context, param: str, value: Any) -> tuple[IPv4Address]:
     if isinstance(value, tuple):
         return value
+    elif isinstance(value, list):
+        value = " ".join(value)
     dns_servers = set()
     for dns_server in value.split(' ', maxsplit=1):
         try:
