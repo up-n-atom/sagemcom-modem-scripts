@@ -19,7 +19,6 @@ class EnumChoice(click.Choice):
     def convert(self, value, param, ctx):
         if value is None or isinstance(value, Enum):
             return value
-
         converted_str = super().convert(value, param, ctx)
         return self.__enum(converted_str)
 
