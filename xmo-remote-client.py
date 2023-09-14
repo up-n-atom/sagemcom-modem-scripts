@@ -44,7 +44,8 @@ async def cli(ctx: click.Context, host: str, username: str, password: str, authe
     try:
         await client.login()
     except Exception as e:
-        raise click.Abort(e)
+        click.echo(e, err=True)
+        raise click.Abort()
 
 
 @cli.command()
@@ -56,7 +57,8 @@ async def get_value(ctx: click.Context, path: str) -> None:
     try:
         value = await ctx.obj.get_value_by_xpath(path)
     except Exception as e:
-        raise click.Abort(e)
+        click.echo(e, err=True)
+        raise click.Abort()
     else:
         click.echo(json.dumps(value, indent=2))
 
@@ -71,7 +73,8 @@ async def set_value(ctx: click.Context, path: str, value: str) -> None:
     try:
         value = await ctx.obj.set_value_by_xpath(path, value)
     except Exception as e:
-        raise click.Abort(e)
+        click.echo(e, err=True)
+        raise click.Abort()
 
 
 @cli.command()
@@ -126,6 +129,7 @@ async def set_dns_servers(client: SagemcomClient, dns_servers: tuple[IPv4Address
             await client.set_value_by_xpath(f"Device/DNS/Relay/Forwardings/Forwarding[@uid={uid}]/Enable", True)
     except Exception as e:
         click.echo(e, err=True)
+        raise click.Abort()
 
 
 @cli.command()
@@ -139,10 +143,11 @@ async def disable_wifi_radio(client: SagemcomClient, radio: str) -> None:
             radio = click.prompt('Choose radio', type=click.Choice(radios), show_choices=True)
         else:
             if not radio in radios:
-                ctx.fail(f"radio {radio} does not exist")
+                raise click.BadParameter(f"radio {radio} does not exist")
         await client.set_value_by_xpath(f"Device/WiFi/Radios/Radio[Alias='{radio}']/Enable", False)
     except Exception as e:
-        raise click.Abort(e)
+        click.echo(e, err=True)
+        raise click.Abort()
 
 
 if __name__ == '__main__':
