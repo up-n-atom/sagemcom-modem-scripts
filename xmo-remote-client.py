@@ -56,7 +56,7 @@ async def get_value(ctx: click.Context, path: str) -> None:
     try:
         value = await ctx.obj.get_value_by_xpath(path)
     except Exception as e:
-        click.Abort(e)
+        raise click.Abort(e)
     else:
         click.echo(json.dumps(value, indent=2))
 
@@ -71,7 +71,7 @@ async def set_value(ctx: click.Context, path: str, value: str) -> None:
     try:
         value = await ctx.obj.set_value_by_xpath(path, value)
     except Exception as e:
-        click.Abort(e)
+        raise click.Abort(e)
 
 
 @cli.command()
