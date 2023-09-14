@@ -141,9 +141,8 @@ async def disable_wifi_radio(client: SagemcomClient, radio: str) -> None:
         radios = {radio['Alias'] for radio in value if 'Alias' in radio}
         if radio is None:
             radio = click.prompt('Choose radio', type=click.Choice(radios), show_choices=True)
-        else:
-            if not radio in radios:
-                raise click.BadParameter(f"radio {radio} does not exist")
+        elif not radio in radios:
+            raise click.BadParameter(f"radio {radio} does not exist")
         await client.set_value_by_xpath(f"Device/WiFi/Radios/Radio[Alias='{radio}']/Enable", False)
     except Exception as e:
         click.echo(e, err=True)
