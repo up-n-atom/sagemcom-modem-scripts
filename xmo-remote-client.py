@@ -128,6 +128,23 @@ async def set_dns_servers(client: SagemcomClient, dns_servers: tuple[IPv4Address
         click.echo(e, err=True)
 
 
+@cli.command()
+@click.option('--radio')
+@click.pass_obj
+async def disable_wifi_radio(client: SagemcomClient, radio: str) -> None:
+    try:
+        value = await client.get_value_by_xpath('Device/WiFi/Radios')
+        radios = {radio['Alias'] for radio in value if 'Alias' in radio}
+        if radio is None:
+            radio = click.prompt('Choose radio', type=click.Choice(radios), show_choices=True)
+        else:
+            if not radio in radios:
+                ctx.fail(f"radio {radio} does not exist")
+        await client.set_value_by_xpath(f"Device/WiFi/Radios/Radio[Alias='{radio}']/Enable", False)
+    except Exception as e:
+        raise click.Abort(e)
+
+
 if __name__ == '__main__':
     config = dict()
     if os.path.isfile('config.yaml'):
