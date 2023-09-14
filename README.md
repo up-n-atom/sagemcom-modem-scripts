@@ -1,17 +1,15 @@
-# Sagemcom Modem Management Scripts
-
-A small collection of python modem management scripts for various Sagmecom modems
-
-Python 3.9+ required.
+# Sagemcom Modem Remote Client
 
 ## Installation
 
+Install [git](https://git-scm.com/downloads/) and [python3](https://www.python.org/downloads/)
+
 ```bash
+git clone https://github.com/up-n-atom/sagemcom-modem-scripts.git
+cd sagemcom-modem-scripts
+git checkout cli
+python3 -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
-
-cp config_modem.py.dist config_modem.py
+deactivate
 ```
-
-## Configuration
-
-Edit the settings in `config_modem.py`
