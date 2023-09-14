@@ -5,6 +5,7 @@ from enum import Enum
 from ipaddress import IPv4Address
 import json
 import os
+import re
 from sagemcom_api.client import SagemcomClient
 from sagemcom_api.enums import EncryptionMethod
 from typing import Any
@@ -151,6 +152,21 @@ async def disable_wifi_radio(client: SagemcomClient, radio: Any) -> None:
     except Exception as e:
         click.echo(e, err=True)
         raise click.Abort()
+
+
+def validate_mac_address(ctx: click.Context, param: str, value: str) -> str:
+    if not re.match(r"([0-9A-F]{2}:){5}[0-9A-F]{2}$", value):
+        raise click.BadParameter("Invalid mac address", param=value)
+    return value
+
+
+@cli.command()
+@click.option('-m', '--mac-address', type=click.UNPROCESSED, callback=validate_mac_address, prompt=True)
+@click.pass_obj
+async def enable_advanced_dmz(client: SagemcomClient, mac_address: str) -> None:
+    await client.set_value_by_xpath('Device/Services/BellNetworkCfg/AdvancedDMZ/Enable', False)
+    await client.set_value_by_xpath('Device/Services/BellNetworkCfg/AdvancedDMZ/AdvancedDMZhost', mac_address)
+    await client.set_value_by_xpath('Device/Services/BellNetworkCfg/AdvancedDMZ/Enable', True)
 
 
 if __name__ == '__main__':
