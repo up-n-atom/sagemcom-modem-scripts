@@ -120,20 +120,20 @@ async def set_dns_servers(client: SagemcomClient, dns_servers: tuple[IPv4Address
 
 
 @cli.command()
-@click.option('-r', '--radio', multiple=True)
+@click.option('-r', '--radios', multiple=True)
 @click.pass_obj
-async def disable_wifi_radio(client: SagemcomClient, radio: tuple | list) -> None:
+async def disable_wifi_radios(client: SagemcomClient, radios: tuple[str] | list[str]) -> None:
     try:
         value = await client.get_value_by_xpath('Device/WiFi/Radios')
         active_radios = {radio['Alias'] for radio in value if 'Alias' in radio and \
             'Enable' in radio and radio['Enable']}
-        if radio is None or not len(radio):
-            radio = click.prompt('Choose radio', type=click.Choice(active_radios), show_choices=True),
-        radios = set(radio) - active_radios
-        if len(radios):
-            raise click.BadParameter("Invalid radio(s): {0}".format(", ".join(radios)))
-        radios = set(radio) & active_radios
-        for alias in radios:
+        if not len(radios):
+            radios = click.prompt('Choose radio', type=click.Choice(active_radios), show_choices=True),
+        invalid_radios = set(radios) - active_radios
+        if len(invalid_radios):
+            raise click.BadParameter("Invalid radio(s): {0}".format(", ".join(invalid_radios)))
+        disable_radios = set(radios) & active_radios
+        for alias in disable_radios:
             await client.set_value_by_xpath(f"Device/WiFi/Radios/Radio[Alias='{alias}']/Enable", False)
     except Exception as e:
         click.echo(e, err=True)
