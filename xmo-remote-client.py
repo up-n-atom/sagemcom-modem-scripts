@@ -8,7 +8,6 @@ import os
 import re
 from sagemcom_api.client import SagemcomClient
 from sagemcom_api.enums import EncryptionMethod
-from typing import Any
 import yaml
 
 
