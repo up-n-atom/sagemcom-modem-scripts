@@ -90,22 +90,8 @@ async def get_dns(ctx: click.Context) -> None:
     await ctx.invoke(get_value, path='Device/DNS')
 
 
-def validate_dns_servers(ctx: click.Context, param: str, value: Any) -> tuple[IPv4Address]:
-    if isinstance(value, tuple):
-        return value
-    elif isinstance(value, list):
-        value = " ".join(value)
-    dns_servers = set()
-    for dns_server in value.split(' ', maxsplit=1):
-        try:
-            dns_servers.add(IPv4Address(dns_server))
-        except:
-            raise click.BadParameter(f"Invalid IPv4 address: {dns_server}")
-    return tuple(dns_servers)
-
-
 @cli.command()
-@click.option('--dns-servers', type=click.UNPROCESSED, callback=validate_dns_servers, prompt='DNS servers seperated by a space')
+@click.option('-s', '--dns-servers', required=True, nargs=2, type=IPv4Address)
 @click.pass_obj
 async def set_dns_servers(client: SagemcomClient, dns_servers: tuple[IPv4Address]) -> None:
     try:
