@@ -52,10 +52,11 @@ async def cli(ctx: click.Context, host: str, username: str, password: str, authe
 @click.option('--path', required=True)
 @click.pass_context
 async def get_value(ctx: click.Context, path: str) -> None:
-    if not isinstance(ctx.obj, SagemcomClient):
+    client = ctx.find_object(SagemcomClient)
+    if client is None:
         return
     try:
-        value = await ctx.obj.get_value_by_xpath(path)
+        value = await client.get_value_by_xpath(path)
     except Exception as e:
         click.echo(e, err=True)
         raise click.Abort()
@@ -68,10 +69,11 @@ async def get_value(ctx: click.Context, path: str) -> None:
 @click.option('--value', required=True)
 @click.pass_context
 async def set_value(ctx: click.Context, path: str, value: str) -> None:
-    if not isinstance(ctx.obj, SagemcomClient):
+    client = ctx.find_object(SagemcomClient)
+    if client is None:
         return
     try:
-        value = await ctx.obj.set_value_by_xpath(path, value)
+        value = await client.set_value_by_xpath(path, value)
     except Exception as e:
         click.echo(e, err=True)
         raise click.Abort()
