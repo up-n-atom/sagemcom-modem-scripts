@@ -142,7 +142,7 @@ async def disable_wifi_radios(client: SagemcomClient, radios: tuple[str] | list[
 
 def validate_mac_address(ctx: click.Context, param: click.Parameter, value: str) -> str:
     if not re.match(r"([0-9A-F]{2}:){5}[0-9A-F]{2}$", value):
-        raise click.BadParameter("Invalid MAC address", ctx, param)
+        raise click.BadParameter('Invalid MAC address', ctx, param)
     return value
 
 
