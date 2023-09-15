@@ -142,18 +142,23 @@ async def disable_wifi_radios(client: SagemcomClient, radios: tuple[str] | list[
 
 
 def validate_mac_address(ctx: click.Context, param: click.Parameter, value: str) -> str:
-    if not re.match(r"([0-9A-F]{2}:){5}[0-9A-F]{2}$", value):
+    result = value.upper()
+    if not re.match(r"([0-9A-F]{2}:){5}[0-9A-F]{2}$", result):
         raise click.BadParameter('Invalid MAC address', ctx, param)
-    return value
+    return result
 
 
 @cli.command()
 @click.option('-m', '--mac-address', callback=validate_mac_address, prompt='MAC Address')
 @click.pass_obj
 async def enable_advanced_dmz(client: SagemcomClient, mac_address: str) -> None:
-    await client.set_value_by_xpath('Device/Services/BellNetworkCfg/AdvancedDMZ/Enable', False)
-    await client.set_value_by_xpath('Device/Services/BellNetworkCfg/AdvancedDMZ/AdvancedDMZhost', mac_address)
-    await client.set_value_by_xpath('Device/Services/BellNetworkCfg/AdvancedDMZ/Enable', True)
+    try:
+        await client.set_value_by_xpath('Device/Services/BellNetworkCfg/AdvancedDMZ/Enable', False)
+        await client.set_value_by_xpath('Device/Services/BellNetworkCfg/AdvancedDMZ/AdvancedDMZhost', mac_address)
+        await client.set_value_by_xpath('Device/Services/BellNetworkCfg/AdvancedDMZ/Enable', True)
+    except Exception as e:
+        click.echo(e, err=True)
+        raise click.Abort()
 
 
 if __name__ == '__main__':
