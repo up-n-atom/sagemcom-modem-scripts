@@ -30,4 +30,8 @@ python3 xmo-remote-client.py -a MD5 get-dns
 python3 xmo-remote-client.py -a MD5 set-dns-servers -s 192.168.2.254 192.168.2.254
 # Disable 5G and 2.4G radios
 python3 xmo-remote-client.py -a MD5 disable-wifi-radios -r RADIO5G -r RADIO2G4
+# Enable advanced DMZ
+python3 xmo-remote-client.py -a MD5 enable-advanced-dmz
+# Disable advanced DMZ
+python3 xmo-remote-client.py -a MD5 set-value --path "Device/Services/BellNetworkCfg/AdvancedDMZ/Enable" --value False
 ```
