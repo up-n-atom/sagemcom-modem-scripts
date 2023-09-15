@@ -2,3 +2,8 @@ host: 192.168.2.1
 username: admin
 password: admin
 authentication_method: MD5
+# disable-wifi-radio:
+#   radio:
+#   - RADIO2G4
+#   - RADIO5G
+#   - RADIO6G
