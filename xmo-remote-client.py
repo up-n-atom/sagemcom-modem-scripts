@@ -147,7 +147,7 @@ def validate_mac_address(ctx: click.Context, param: click.Parameter, value: str)
 
 
 @cli.command()
-@click.option('-m', '--mac-address', callback=validate_mac_address, prompt=True)
+@click.option('-m', '--mac-address', callback=validate_mac_address, prompt='MAC Address')
 @click.pass_obj
 async def enable_advanced_dmz(client: SagemcomClient, mac_address: str) -> None:
     await client.set_value_by_xpath('Device/Services/BellNetworkCfg/AdvancedDMZ/Enable', False)
