@@ -136,7 +136,7 @@ async def set_dns_servers(client: SagemcomClient, dns_servers: tuple[IPv4Address
 @cli.command()
 @click.option('-r', '--radio', multiple=True)
 @click.pass_obj
-async def disable_wifi_radio(client: SagemcomClient, radio: Any) -> None:
+async def disable_wifi_radio(client: SagemcomClient, radio: tuple | list) -> None:
     try:
         value = await client.get_value_by_xpath('Device/WiFi/Radios')
         active_radios = {radio['Alias'] for radio in value if 'Alias' in radio and \
@@ -145,7 +145,7 @@ async def disable_wifi_radio(client: SagemcomClient, radio: Any) -> None:
             radio = click.prompt('Choose radio', type=click.Choice(active_radios), show_choices=True),
         radios = set(radio) - active_radios
         if len(radios):
-            raise click.BadParameter("Invalid radio(s) {0}".format(", ".join(radios)))
+            raise click.BadParameter("Invalid radio(s): {0}".format(", ".join(radios)))
         radios = set(radio) & active_radios
         for alias in radios:
             await client.set_value_by_xpath(f"Device/WiFi/Radios/Radio[Alias='{alias}']/Enable", False)
