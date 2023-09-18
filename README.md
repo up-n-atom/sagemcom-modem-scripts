@@ -41,9 +41,10 @@ Commands:
 ### Bell Home/Giga Hub Examples
 
 > [!NOTE]
-> The **Home Hub 4000** uses `MD5` authentication and can be enabled using the `-a` or `--authentication-method` switch, eg. `-a MD5`
+> The **Home Hub 4000** uses `MD5` authentication, which can be enabled using either `-a` _or_ `--authentication-method` option, eg. `-a MD5`
 
 ```bash
+cd sagemcom-modem-scripts
 source .venv/bin/activate
 # List available commands
 python3 xmo-remote-client.py --help
