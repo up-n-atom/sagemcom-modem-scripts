@@ -38,7 +38,7 @@ Commands:
   set-value
 ```
 
-## Bell Home/Giga Hub Examples
+### Bell Home/Giga Hub Examples
 
 > [!NOTE]
 > The **Home Hub 4000** uses `MD5` authentication and can be enabled using the `-a` or `--authentication-method` switch, eg. `-a MD5`
