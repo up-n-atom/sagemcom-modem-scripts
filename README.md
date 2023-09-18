@@ -14,24 +14,30 @@ pip install -r requirements.txt
 deactivate
 ```
 
-## Bell Home Hub 4000 Examples
+## Bell Home/Giga Hub Examples
+
+> [!NOTE]
+> The **Home Hub 4000** uses `MD5` authentication and can be enabled using the `-a` or `--authentication-method` switch, eg. `-a MD5`
 
 ```bash
 source .venv/bin/activate
 # List available commands
 python3 xmo-remote-client.py --help
 # Dump Device tree
-python3 xmo-remote-client.py -a MD5 get-value --path "Device"
+python3 xmo-remote-client.py get-value --path "Device"
 # Get WAN mode
-python3 xmo-remote-client.py -a MD5 get-wan-mode
+python3 xmo-remote-client.py get-wan-mode
 # Get DNS settings
-python3 xmo-remote-client.py -a MD5 get-dns
+python3 xmo-remote-client.py get-dns
 # Enable local DNS server ie. Pi-hole
-python3 xmo-remote-client.py -a MD5 set-dns-servers -s 192.168.2.254 192.168.2.254
+python3 xmo-remote-client.py set-dns-servers -s 192.168.2.254 192.168.2.254
 # Disable 5G and 2.4G radios
-python3 xmo-remote-client.py -a MD5 disable-wifi-radios -r RADIO5G -r RADIO2G4
-# Enable advanced DMZ
-python3 xmo-remote-client.py -a MD5 enable-advanced-dmz
+python3 xmo-remote-client.py disable-wifi-radios -r RADIO5G -r RADIO2G4
+# Disable radio w/ radio prompt
+python3 xmo-remote-client.py disable-wifi-radios
+# Enable advanced DMZ w/ MAC address prompt
+python3 xmo-remote-client.py enable-advanced-dmz
 # Disable advanced DMZ
-python3 xmo-remote-client.py -a MD5 set-value --path "Device/Services/BellNetworkCfg/AdvancedDMZ/Enable" --value False
+python3 xmo-remote-client.py set-value --path "Device/Services/BellNetworkCfg/AdvancedDMZ/Enable" --value False
+deactivate
 ```
