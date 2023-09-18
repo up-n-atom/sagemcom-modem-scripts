@@ -14,6 +14,30 @@ pip install -r requirements.txt
 deactivate
 ```
 
+## Usage
+
+```
+Usage: xmo-remote-client.py [OPTIONS] COMMAND1 [ARGS]... [COMMAND2
+                            [ARGS]...]...
+
+Options:
+  -H, --host TEXT                 Hostname or host IP
+  -u, --username TEXT             Administrator username
+  -p, --password TEXT             Administrator password  [required]
+  -a, --authentication-method [MD5|SHA512]
+                                  Authentication method
+  --help                          Show this message and exit.
+
+Commands:
+  disable-wifi-radios
+  enable-advanced-dmz
+  get-dns
+  get-value
+  get-wan-mode
+  set-dns-servers
+  set-value
+```
+
 ## Bell Home/Giga Hub Examples
 
 > [!NOTE]
