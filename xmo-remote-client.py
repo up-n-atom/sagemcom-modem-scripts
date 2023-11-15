@@ -99,14 +99,14 @@ async def set_dns_servers(client: SagemcomClient, dns_servers: tuple[IPv4Address
     try:
         forwards = await client.get_value_by_xpath('Device/DNS/Relay/Forwardings')
         autos = {forward['uid'] for forward in forwards \
-            if 'uid' in forward and \
-               'Alias' in forward and forward['Alias'].startswith('IPCP') and \
-               'Interface' in forward and forward['Interface'].endswith('[IP_DATA]') and \
-               'Enable' in forward and forward['Enable']}
+            if forward.keys() >= {'uid', 'Alias', 'Interface', 'Enable'} and \
+               forward['Alias'].startswith('IPCP') and \
+               forward['Interface'].endswith('[IP_DATA]') and \
+               forward['Enable']}
         statics = {forward['uid'] for forward in forwards \
-            if 'uid' in forward and \
-               'Alias' in forward and forward['Alias'].startswith('STATIC') and \
-               'Interface' in forward and forward['Interface'].endswith(('[IP_DATA]', '[IP_BR_LAN]'))}
+            if forward.keys() >= {'uid', 'Alias', 'Interface'} and \
+               forward['Alias'].startswith('STATIC') and \
+               forward['Interface'].endswith(('[IP_DATA]', '[IP_BR_LAN]'))}
         for uid in autos:
             await client.set_value_by_xpath(f"Device/DNS/Relay/Forwardings/Forwarding[@uid={uid}]/Enable", False)
         for uid, dns_server in zip(statics, dns_servers):
@@ -127,8 +127,8 @@ async def set_dns_servers(client: SagemcomClient, dns_servers: tuple[IPv4Address
 async def disable_wifi_radios(client: SagemcomClient, radios: tuple[str] | list[str]) -> None:
     try:
         value = await client.get_value_by_xpath('Device/WiFi/Radios')
-        active_radios = {radio['Alias'] for radio in value if 'Alias' in radio and \
-            'Enable' in radio and radio['Enable']}
+        active_radios = {radio['Alias'] for radio in value if radio.keys() >= {'Alias', 'Enable'} and \
+            radio['Enable']}
         if not len(radios):
             radios = click.prompt('Choose radio', type=click.Choice(active_radios), show_choices=True),
         invalid_radios = set(radios) - active_radios
