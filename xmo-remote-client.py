@@ -49,19 +49,20 @@ async def cli(ctx: click.Context, host: str, username: str, password: str, authe
 
 
 @cli.command()
-@click.option('--path', required=True)
+@click.option('--path', required=True, multiple=True)
 @click.pass_context
 async def get_value(ctx: click.Context, path: str) -> None:
     client = ctx.find_object(SagemcomClient)
     if client is None:
         return
-    try:
-        value = await client.get_value_by_xpath(path)
-    except Exception as e:
-        click.echo(e, err=True)
-        raise click.Abort()
-    else:
-        click.echo(json.dumps(value, indent=2))
+    for _path in path:
+        try:
+            value = await client.get_value_by_xpath(_path)
+        except Exception as e:
+            click.echo(e, err=True)
+            raise click.Abort()
+        else:
+            click.echo(json.dumps(value, indent=2))
 
 
 @cli.command()
