@@ -24,7 +24,7 @@ class EnumChoice(click.Choice):
 
 
 @click.group(chain=True)
-@click.option('-H', '--host', default='192.168.2.1', help='Hostname or host IP')
+@click.option('-H', '--host', default='192.168.2.1', help='Hostname or host IP', type=IPv4Address)
 @click.option('-u', '--username', default='admin', help='Administrator username')
 @click.option('-p', '--password', required=True, help='Administrator password', prompt=True, hide_input=True)
 @click.option('-a', '--authentication-method',
