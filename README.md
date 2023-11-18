@@ -1,39 +1,52 @@
 # Sagemcom Modem Remote Client
 
-## Installation
-
-Install [git](https://git-scm.com/downloads/) and [python3](https://www.python.org/downloads/)
-
+## Build Package
 ```bash
 git clone https://github.com/up-n-atom/sagemcom-modem-scripts.git
 cd sagemcom-modem-scripts
 git checkout cli
+python3 -m build
+```
+
+## Installation
+
+Install [git](https://git-scm.com/downloads/) and [python3](https://www.python.org/downloads/)
+
+## Install via build package
+
+```bash
 python3 -m venv .venv
 source .venv/bin/activate
-pip install -r requirements.txt
+pip install dist/xmo_remote_client-0.0.1-py3-none-any.whl
+deactivate
+```
+
+## Install via Github release
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install https://github.com/up-n-atom/sagemcom-modem-scripts/releases/download/v0.0.1/xmo_remote_client-0.0.1-py3-none-any.whl
 deactivate
 ```
 
 ## Usage
 
 ```
-Usage: xmo-remote-client.py [OPTIONS] COMMAND1 [ARGS]... [COMMAND2
-                            [ARGS]...]...
+Usage: xmo-remote-client [OPTIONS] COMMAND1 [ARGS]... [COMMAND2 [ARGS]...]...
 
 Options:
-  -H, --host TEXT                 Hostname or host IP
+  -H, --host IPV4ADDRESS          Hostname or host IP
   -u, --username TEXT             Administrator username
   -p, --password TEXT             Administrator password  [required]
-  -a, --authentication-method [MD5|SHA512]
-                                  Authentication method
+  -a, --auth-method [MD5|SHA512]  Authentication method
   --help                          Show this message and exit.
 
 Commands:
+  disable-advanced-dmz
   disable-wifi-radios
   enable-advanced-dmz
-  get-dns
   get-value
-  get-wan-mode
   set-dns-servers
   set-value
 ```
@@ -41,7 +54,7 @@ Commands:
 ### Bell Home/Giga Hub Examples
 
 > [!NOTE]
-> The **Home Hub 4000** uses `MD5` authentication, which can be enabled using either `-a` _or_ `--authentication-method` option, eg. `-a MD5`
+> The **Home Hub 4000** uses `MD5` authentication, which can be enabled using either `-a` _or_ `--auth-method` option, eg. `-a MD5`
 
 ```bash
 cd sagemcom-modem-scripts
@@ -51,9 +64,7 @@ python3 xmo-remote-client.py --help
 # Dump Device tree
 python3 xmo-remote-client.py get-value --path "Device"
 # Get WAN mode
-python3 xmo-remote-client.py get-wan-mode
-# Get DNS settings
-python3 xmo-remote-client.py get-dns
+python3 xmo-remote-client.py get-value --path "Device/Services/BellNetworkCfg/WanMode"
 # Enable local DNS server ie. Pi-hole
 python3 xmo-remote-client.py set-dns-servers -s 192.168.2.254 192.168.2.254
 # Disable 5G and 2.4G radios
@@ -62,7 +73,7 @@ python3 xmo-remote-client.py disable-wifi-radios -r RADIO5G -r RADIO2G4
 python3 xmo-remote-client.py disable-wifi-radios
 # Enable advanced DMZ w/ MAC address prompt
 python3 xmo-remote-client.py enable-advanced-dmz
-# Disable advanced DMZ
-python3 xmo-remote-client.py set-value --path "Device/Services/BellNetworkCfg/AdvancedDMZ/Enable" --value False
+# Get multiple values ie. OLT info
+python3 xmo-remote-client.py get-value --path "Device/Optical/G988/General/OltG/OltVendorId" --path "Device/Optical/G988/General/OltG/Version"
 deactivate
 ```
