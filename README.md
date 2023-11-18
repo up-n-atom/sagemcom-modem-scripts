@@ -1,5 +1,9 @@
 # Sagemcom Modem Remote Client
 
+## Prerequisite 
+
+Install [git](https://git-scm.com/downloads/) and [python3](https://www.python.org/downloads/)
+
 ## Build Package
 ```bash
 git clone https://github.com/up-n-atom/sagemcom-modem-scripts.git
@@ -7,10 +11,6 @@ cd sagemcom-modem-scripts
 git checkout cli
 python3 -m build
 ```
-
-## Installation
-
-Install [git](https://git-scm.com/downloads/) and [python3](https://www.python.org/downloads/)
 
 ## Install via build package
 
