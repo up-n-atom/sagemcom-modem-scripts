@@ -2,6 +2,7 @@ import asyncclick as click
 from sagemcom_api.client import SagemcomClient
 from . import xmo
 
+
 @xmo.cli.command()
 @click.option('-r', '--radios', multiple=True)
 @click.pass_obj

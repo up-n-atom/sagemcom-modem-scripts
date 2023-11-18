@@ -3,6 +3,7 @@ from ipaddress import IPv4Address
 from sagemcom_api.client import SagemcomClient
 from . import xmo
 
+
 @xmo.cli.command()
 @click.option('-s', '--dns-servers', required=True, nargs=2, type=IPv4Address)
 @click.pass_obj

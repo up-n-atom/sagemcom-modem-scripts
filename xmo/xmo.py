@@ -63,7 +63,6 @@ async def get_value(ctx: click.Context, path: str) -> None:
             click.echo(json.dumps(value, indent=2))
 
 
-
 @cli.command()
 @click.option('--path', required=True)
 @click.option('--value', required=True)

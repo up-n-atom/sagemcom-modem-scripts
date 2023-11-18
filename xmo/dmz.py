@@ -3,11 +3,13 @@ import re
 from sagemcom_api.client import SagemcomClient
 from . import xmo
 
+
 def _validate_mac_address(ctx: click.Context, param: click.Parameter, value: str) -> str:
     result = value.upper()
     if not re.match(r"([0-9A-F]{2}:){5}[0-9A-F]{2}$", result):
         raise click.BadParameter('Invalid MAC address', ctx, param)
     return result
+
 
 @xmo.cli.command()
 @click.option('-m', '--mac-address', callback=_validate_mac_address, prompt='MAC Address')
@@ -20,6 +22,7 @@ async def enable_advanced_dmz(client: SagemcomClient, mac_address: str) -> None:
     except Exception as e:
         click.echo(e, err=True)
         raise click.Abort()
+
 
 @xmo.cli.command()
 @click.pass_context
