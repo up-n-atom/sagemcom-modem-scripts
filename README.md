@@ -57,23 +57,22 @@ Commands:
 > The **Home Hub 4000** uses `MD5` authentication, which can be enabled using either `-a` _or_ `--auth-method` option, eg. `-a MD5`
 
 ```bash
-cd sagemcom-modem-scripts
 source .venv/bin/activate
 # List available commands
-python3 xmo-remote-client.py --help
+xmo-remote-client --help
 # Dump Device tree
-python3 xmo-remote-client.py get-value --path "Device"
+xmo-remote-client get-value --path "Device"
 # Get WAN mode
-python3 xmo-remote-client.py get-value --path "Device/Services/BellNetworkCfg/WanMode"
+xmo-remote-client get-value --path "Device/Services/BellNetworkCfg/WanMode"
 # Enable local DNS server ie. Pi-hole
-python3 xmo-remote-client.py set-dns-servers -s 192.168.2.254 192.168.2.254
+xmo-remote-client set-dns-servers -s 192.168.2.254 192.168.2.254
 # Disable 5G and 2.4G radios
-python3 xmo-remote-client.py disable-wifi-radios -r RADIO5G -r RADIO2G4
+xmo-remote-client disable-wifi-radios -r RADIO5G -r RADIO2G4
 # Disable radio w/ radio prompt
-python3 xmo-remote-client.py disable-wifi-radios
+xmo-remote-client disable-wifi-radios
 # Enable advanced DMZ w/ MAC address prompt
-python3 xmo-remote-client.py enable-advanced-dmz
+xmo-remote-client enable-advanced-dmz
 # Get multiple values ie. OLT info
-python3 xmo-remote-client.py get-value --path "Device/Optical/G988/General/OltG/OltVendorId" --path "Device/Optical/G988/General/OltG/Version"
+xmo-remote-client get-value --path "Device/Optical/G988/General/OltG/OltVendorId" --path "Device/Optical/G988/General/OltG/Version"
 deactivate
 ```
