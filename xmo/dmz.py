@@ -26,6 +26,6 @@ async def enable_advanced_dmz(client: SagemcomClient, mac_address: str) -> None:
 
 @xmo.cli.command()
 @click.pass_context
-async def disable_advanced_dmz(ctx: click.Context):
-    await ctx.invoke(set_value, path='Device/Services/BellNetworkCfg/AdvancedDMZ/Enable', value=False)
+async def disable_advanced_dmz(ctx: click.Context) -> None:
+    await ctx.invoke(xmo.set_value, path='Device/Services/BellNetworkCfg/AdvancedDMZ/Enable', value=False)
 
