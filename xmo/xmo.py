@@ -28,7 +28,7 @@ class EnumChoice(click.Choice):
               default=EncryptionMethod.SHA512, type=EnumChoice(EncryptionMethod),
               help='Authentication method')
 @click.pass_context
-async def cli(ctx: click.Context, host: str, username: str, password: str, auth_method: EncryptionMethod) -> None:
+async def cli(ctx: click.Context, host: IPv4Address, username: str, password: str, auth_method: EncryptionMethod) -> None:
     ctx.obj = client = await ctx.with_async_resource(
         SagemcomClient(host, username, password, auth_method,
             ClientSession(
