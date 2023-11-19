@@ -17,7 +17,7 @@ python3 -m build
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
-pip install dist/xmo_remote_client-0.0.1-py3-none-any.whl
+pip install dist/xmo_remote_client-0.0.2-py3-none-any.whl
 deactivate
 ```
 
@@ -26,14 +26,14 @@ deactivate
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
-pip install https://github.com/up-n-atom/sagemcom-modem-scripts/releases/download/v0.0.1/xmo_remote_client-0.0.1-py3-none-any.whl
+pip install https://github.com/up-n-atom/sagemcom-modem-scripts/releases/download/v0.0.2/xmo_remote_client-0.0.2-py3-none-any.whl
 deactivate
 ```
 
 ## Usage
 
 ```
-Usage: xmo-remote-client [OPTIONS] COMMAND1 [ARGS]... [COMMAND2 [ARGS]...]...
+Usage: python -m xmo [OPTIONS] COMMAND1 [ARGS]... [COMMAND2 [ARGS]...]...
 
 Options:
   -H, --host IPV4ADDRESS          Hostname or host IP
@@ -46,7 +46,9 @@ Commands:
   disable-advanced-dmz
   disable-wifi-radios
   enable-advanced-dmz
+  get-onu-mode
   get-value
+  get-wan-mode
   set-dns-servers
   set-value
 ```
@@ -63,7 +65,7 @@ xmo-remote-client --help
 # Dump Device tree
 xmo-remote-client get-value --path "Device"
 # Get WAN mode
-xmo-remote-client get-value --path "Device/Services/BellNetworkCfg/WanMode"
+xmo-remote-client get-wan-mode
 # Enable local DNS server ie. Pi-hole
 xmo-remote-client set-dns-servers -s 192.168.2.254 192.168.2.254
 # Disable 5G and 2.4G radios
@@ -72,6 +74,8 @@ xmo-remote-client disable-wifi-radios -r RADIO5G -r RADIO2G4
 xmo-remote-client disable-wifi-radios
 # Enable advanced DMZ w/ MAC address prompt
 xmo-remote-client enable-advanced-dmz
+# Get ONU mode
+xmo-remote-client get-onu-mode
 # Get multiple values ie. OLT info
 xmo-remote-client get-value --path "Device/Optical/G988/General/OltG/OltVendorId" --path "Device/Optical/G988/General/OltG/Version"
 deactivate
