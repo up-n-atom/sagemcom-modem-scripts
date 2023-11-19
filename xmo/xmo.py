@@ -48,7 +48,7 @@ async def cli(ctx: click.Context, host: str, username: str, password: str, auth_
 @cli.command()
 @click.option('--path', required=True, multiple=True)
 @click.pass_context
-async def get_value(ctx: click.Context, path: str) -> None:
+async def get_value(ctx: click.Context, path: list[str]) -> None:
     client = ctx.find_object(SagemcomClient)
     if client is None:
         return
