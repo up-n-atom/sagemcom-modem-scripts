@@ -9,6 +9,7 @@ Install [git](https://git-scm.com/downloads/) and [python3](https://www.python.o
 git clone https://github.com/up-n-atom/sagemcom-modem-scripts.git
 cd sagemcom-modem-scripts
 git checkout cli
+pip3 install build
 python3 -m build
 ```
 
@@ -17,7 +18,7 @@ python3 -m build
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
-pip install dist/xmo_remote_client-0.0.2-py3-none-any.whl
+pip install dist/xmo_remote_client-0.0.3-py3-none-any.whl
 deactivate
 ```
 
@@ -26,7 +27,7 @@ deactivate
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
-pip install https://github.com/up-n-atom/sagemcom-modem-scripts/releases/download/v0.0.2/xmo_remote_client-0.0.2-py3-none-any.whl
+pip install https://github.com/up-n-atom/sagemcom-modem-scripts/releases/download/v0.0.3/xmo_remote_client-0.0.3-py3-none-any.whl
 deactivate
 ```
 
