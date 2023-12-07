@@ -11,14 +11,14 @@ async def set_dns_servers(client: SagemcomClient, dns_servers: tuple[IPv4Address
     try:
         forwards = await client.get_value_by_xpath('Device/DNS/Relay/Forwardings')
         autos = {forward['uid'] for forward in forwards \
-            if forward.keys() >= {'uid', 'Alias', 'Interface', 'Enable'} and \
-               forward['Alias'].startswith('IPCP') and \
-               forward['Interface'].endswith('[IP_DATA]') and \
-               forward['Enable']}
+            if forward.keys() >= {'uid', 'alias', 'interface', 'enable'} and \
+               forward['alias'].startswith('IPCP') and \
+               forward['interface'].endswith('[IP_DATA]') and \
+               forward['enable']}
         statics = {forward['uid'] for forward in forwards \
-            if forward.keys() >= {'uid', 'Alias', 'Interface'} and \
-               forward['Alias'].startswith('STATIC') and \
-               forward['Interface'].endswith(('[IP_DATA]', '[IP_BR_LAN]'))}
+            if forward.keys() >= {'uid', 'alias', 'interface'} and \
+               forward['alias'].startswith('STATIC') and \
+               forward['interface'].endswith(('[IP_DATA]', '[IP_BR_LAN]'))}
         for uid in autos:
             await client.set_value_by_xpath(f"Device/DNS/Relay/Forwardings/Forwarding[@uid={uid}]/Enable", False)
         for uid, dns_server in zip(statics, dns_servers):
