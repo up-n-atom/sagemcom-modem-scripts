@@ -6,6 +6,7 @@ from enum import Enum
 from ipaddress import IPv4Address
 from sagemcom_api.client import SagemcomClient
 from sagemcom_api.enums import EncryptionMethod
+from . import __version__
 
 
 class EnumChoice(click.Choice):
@@ -27,6 +28,7 @@ class EnumChoice(click.Choice):
 @click.option('-a', '--auth-method',
               default=EncryptionMethod.SHA512, type=EnumChoice(EncryptionMethod),
               help='Authentication method')
+@click.version_option(__version__)
 @click.pass_context
 async def cli(ctx: click.Context, host: IPv4Address, username: str, password: str, auth_method: EncryptionMethod) -> None:
     ctx.obj = client = await ctx.with_async_resource(
