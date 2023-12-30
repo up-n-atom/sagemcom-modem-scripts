@@ -2,6 +2,7 @@ import asyncclick as click
 import json
 from aiohttp import ClientSession, ClientTimeout
 from aiohttp.connector import TCPConnector
+from contextlib import asynccontextmanager
 from enum import Enum
 from ipaddress import IPv4Address
 from sagemcom_api.client import SagemcomClient
@@ -51,8 +52,7 @@ async def cli(ctx: click.Context, host: IPv4Address, username: str, password: st
 @click.option('--path', required=True, multiple=True)
 @click.pass_context
 async def get_value(ctx: click.Context, path: list[str]) -> None:
-    client = ctx.find_object(SagemcomClient)
-    if client is None:
+    if (client := ctx.find_object(SagemcomClient)) is None:
         return
     for _path in path:
         try:
@@ -70,8 +70,7 @@ async def get_value(ctx: click.Context, path: list[str]) -> None:
 @click.option('--value', required=True)
 @click.pass_context
 async def set_value(ctx: click.Context, path: str, value: str) -> None:
-    client = ctx.find_object(SagemcomClient)
-    if client is None:
+    if (client := ctx.find_object(SagemcomClient)) is None:
         return
     try:
         value = await client.set_value_by_xpath(path, value)
