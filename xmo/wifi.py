@@ -12,13 +12,13 @@ async def disable_wifi_radios(client: SagemcomClient, radios: tuple[str] | list[
         active_radios = {radio['alias'] for radio in _radios \
             if radio.keys() >= {'alias', 'enable'} and \
             radio['enable']}
-        if active_radios:
+        if not active_radios:
             click.echo('No active radios')
             return
-        if radios:
+        if not radios:
             radios = click.prompt('Choose radio', type=click.Choice(active_radios), show_choices=True),
         invalid_radios = set(radios) - active_radios
-        if len(invalid_radios):
+        if invalid_radios:
             raise click.BadParameter("Invalid radio(s): {0}".format(", ".join(invalid_radios)))
         disable_radios = set(radios) & active_radios
         for alias in disable_radios:
