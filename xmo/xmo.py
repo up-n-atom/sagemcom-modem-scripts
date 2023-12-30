@@ -60,7 +60,6 @@ async def get_value(ctx: click.Context, path: list[str]) -> None:
         except Exception as e:
             click.echo(e, err=True)
             continue
-            #raise click.Abort()
         else:
             click.echo(json.dumps(value, indent=2))
 
@@ -77,4 +76,15 @@ async def set_value(ctx: click.Context, path: str, value: str) -> None:
     except Exception as e:
         click.echo(e, err=True)
         raise click.Abort()
+
+
+@asynccontextmanager
+async def flipflop(xpath: str) -> None:
+    if (client := click.get_current_context().find_object(SagemcomClient)) is None:
+        raise ValueError('client not found')
+    await client.set_value_by_xpath(xpath, False)
+    try:
+        yield client
+    finally:
+        await client.set_value_by_xpath(xpath, True)
 

@@ -13,12 +13,10 @@ def _validate_mac_address(ctx: click.Context, param: click.Parameter, value: str
 
 @xmo.cli.command()
 @click.option('-m', '--mac-address', callback=_validate_mac_address, prompt='MAC Address')
-@click.pass_obj
-async def enable_advanced_dmz(client: SagemcomClient, mac_address: str) -> None:
+async def enable_advanced_dmz(mac_address: str) -> None:
     try:
-        await client.set_value_by_xpath('Device/Services/BellNetworkCfg/AdvancedDMZ/Enable', False)
-        await client.set_value_by_xpath('Device/Services/BellNetworkCfg/AdvancedDMZ/AdvancedDMZhost', mac_address)
-        await client.set_value_by_xpath('Device/Services/BellNetworkCfg/AdvancedDMZ/Enable', True)
+        async with xmo.flipflop('Device/Services/BellNetworkCfg/AdvancedDMZ/Enable') as client:
+            await client.set_value_by_xpath('Device/Services/BellNetworkCfg/AdvancedDMZ/AdvancedDMZhost', mac_address)
     except Exception as e:
         click.echo(e, err=True)
         raise click.Abort()
