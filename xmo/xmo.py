@@ -44,8 +44,7 @@ async def cli(ctx: click.Context, host: IPv4Address, username: str, password: st
     try:
         await client.login()
     except Exception as e:
-        click.echo(e, err=True)
-        raise click.Abort()
+        ctx.fail(e)
 
 
 @cli.command()
@@ -74,8 +73,7 @@ async def set_value(ctx: click.Context, path: str, value: str) -> None:
     try:
         value = await client.set_value_by_xpath(path, value)
     except Exception as e:
-        click.echo(e, err=True)
-        raise click.Abort()
+        ctx.fail(e)
 
 
 @asynccontextmanager
