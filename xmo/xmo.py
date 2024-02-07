@@ -37,7 +37,7 @@ async def cli(ctx: click.Context, host: IPv4Address, username: str, password: st
             ClientSession(
                 headers={"User-Agent": "XMO_REMOTE_CLIENT/1.0.0"},
                 timeout=ClientTimeout(),
-                connector=TCPConnector(ssl=True),
+                connector=TCPConnector(ssl=False),
             ), True
         )
     )
