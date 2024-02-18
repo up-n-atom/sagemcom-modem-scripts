@@ -1,6 +1,4 @@
 import asyncclick as click
-import re
-from sagemcom_api.client import SagemcomClient
 from . import xmo
 
 
