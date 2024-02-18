@@ -31,6 +31,15 @@ pip install https://github.com/up-n-atom/sagemcom-modem-scripts/releases/downloa
 deactivate
 ```
 
+## Use from Source
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip3 install -r requirements.txt
+python3 -m xmo ...
+```
+
 ## Usage
 
 ```
