@@ -1,6 +1,7 @@
 import os
 import xmo.dns
 import xmo.dmz
+import xmo.log
 import xmo.mode
 import xmo.wifi
 import yaml
