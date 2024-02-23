@@ -24,6 +24,5 @@ async def disable_wifi_radios(client: SagemcomClient, radios: tuple[str] | list[
         for alias in disable_radios:
             await client.set_value_by_xpath(f"Device/WiFi/Radios/Radio[Alias='{alias}']/Enable", False)
     except Exception as e:
-        click.echo(e, err=True)
-        raise click.Abort()
+        ctx.fail(e)
 

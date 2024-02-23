@@ -8,5 +8,4 @@ async def flush_log() -> None:
         async with xmo.flipflop('Device/DeviceInfo/FlushDeviceLog') as client:
             pass
     except Exception as e:
-        click.echo(e, err=True)
-        raise click.Abort()
+        ctx.fail(e)

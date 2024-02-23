@@ -18,8 +18,7 @@ async def enable_advanced_dmz(mac_address: str) -> None:
         async with xmo.flipflop('Device/Services/BellNetworkCfg/AdvancedDMZ/Enable') as client:
             await client.set_value_by_xpath('Device/Services/BellNetworkCfg/AdvancedDMZ/AdvancedDMZhost', mac_address)
     except Exception as e:
-        click.echo(e, err=True)
-        raise click.Abort()
+        ctx.fail(e)
 
 
 @xmo.cli.command()
