@@ -1,4 +1,4 @@
 anyio
 asyncclick
-git+https://github.com/djGrrr/python-sagemcom-api.git@master#egg=sagemcom_api
+sagemcom_api==1.1.0
 pyaml
