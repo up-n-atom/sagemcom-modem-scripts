@@ -18,7 +18,7 @@ python3 -m build
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
-pip install dist/xmo_remote_client-0.0.4-py3-none-any.whl
+pip install dist/xmo_remote_client-0.0.5-py3-none-any.whl
 deactivate
 ```
 
@@ -27,7 +27,7 @@ deactivate
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
-pip install https://github.com/up-n-atom/sagemcom-modem-scripts/releases/download/v0.0.4/xmo_remote_client-0.0.4-py3-none-any.whl
+pip install https://github.com/up-n-atom/sagemcom-modem-scripts/releases/download/v0.0.5/xmo_remote_client-0.0.5-py3-none-any.whl
 deactivate
 ```
 
