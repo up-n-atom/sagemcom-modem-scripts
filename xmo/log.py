@@ -20,7 +20,8 @@ async def flush_log(ctx: click.Context) -> None:
 @click.pass_obj
 async def read_log(client: SagemcomClient) -> None:
     try:
-        # uncertain if this api is supported globally so access sagemcom_api client private methods improperly
+        # uncertain if this api is universally supported by the xmo protocol... contain and
+        # improperly access the private methods of the sagemcom_api client here for now
         actions = {
             "id": 0,
             "method": "getVendorLogDownloadURI",
