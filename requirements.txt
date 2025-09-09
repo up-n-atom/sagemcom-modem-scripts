@@ -1,4 +1,4 @@
 anyio
 asyncclick
-sagemcom_api==1.1.0
+sagemcom_api>=1.1.0
 pyaml
