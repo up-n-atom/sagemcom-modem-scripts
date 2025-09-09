@@ -1,6 +1,5 @@
 import asyncclick as click
 import re
-from sagemcom_api.client import SagemcomClient
 from . import xmo
 
 
@@ -13,7 +12,8 @@ def _validate_mac_address(ctx: click.Context, param: click.Parameter, value: str
 
 @xmo.cli.command()
 @click.option('-m', '--mac-address', callback=_validate_mac_address, prompt='MAC Address')
-async def enable_advanced_dmz(mac_address: str) -> None:
+@click.pass_context
+async def enable_advanced_dmz(ctx: click.Context, mac_address: str) -> None:
     try:
         async with xmo.flipflop('Device/Services/BellNetworkCfg/AdvancedDMZ/Enable') as client:
             await client.set_value_by_xpath('Device/Services/BellNetworkCfg/AdvancedDMZ/AdvancedDMZhost', mac_address)

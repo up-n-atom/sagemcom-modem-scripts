@@ -29,4 +29,5 @@ async def set_dns_servers(client: SagemcomClient, dns_servers: tuple[IPv4Address
             )
             await client.set_value_by_xpath(f"Device/DNS/Relay/Forwardings/Forwarding[@uid={uid}]/Enable", True)
     except Exception as e:
-        ctx.fail(e)
+        client.echo(e, err=True)
+        raise click.Abort()
