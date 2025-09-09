@@ -1,6 +1,8 @@
-import asyncclick as click
 from ipaddress import IPv4Address
+
+import asyncclick as click
 from sagemcom_api.client import SagemcomClient
+
 from . import xmo
 
 

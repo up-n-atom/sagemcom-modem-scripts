@@ -1,5 +1,6 @@
 import asyncclick as click
 from sagemcom_api.client import SagemcomClient
+
 from . import xmo
 
 
@@ -26,4 +27,3 @@ async def disable_wifi_radios(client: SagemcomClient, radios: tuple[str] | list[
     except Exception as e:
         client.echo(e, err=True)
         raise click.Abort()
-

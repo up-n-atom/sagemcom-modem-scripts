@@ -1,5 +1,7 @@
-import asyncclick as click
 import re
+
+import asyncclick as click
+
 from . import xmo
 
 
@@ -25,4 +27,3 @@ async def enable_advanced_dmz(ctx: click.Context, mac_address: str) -> None:
 @click.pass_context
 async def disable_advanced_dmz(ctx: click.Context) -> None:
     await ctx.invoke(xmo.set_value, path='Device/Services/BellNetworkCfg/AdvancedDMZ/Enable', value=False)
-

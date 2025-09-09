@@ -1,12 +1,14 @@
-import asyncclick as click
-import json
-from aiohttp import ClientSession, ClientTimeout
-from aiohttp.connector import TCPConnector
 from contextlib import asynccontextmanager
 from enum import Enum
 from ipaddress import IPv4Address
+import json
+
+import asyncclick as click
+from aiohttp import ClientSession, ClientTimeout
+from aiohttp.connector import TCPConnector
 from sagemcom_api.client import SagemcomClient
 from sagemcom_api.enums import EncryptionMethod
+
 from . import __version__
 
 
@@ -85,4 +87,3 @@ async def flipflop(xpath: str) -> None:
         yield client
     finally:
         await client.set_value_by_xpath(xpath, True)
-
