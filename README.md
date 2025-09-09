@@ -18,7 +18,7 @@ python3 -m build
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
-pip install dist/xmo_remote_client-0.0.6-py3-none-any.whl
+pip install dist/xmo_remote_client-0.0.7-py3-none-any.whl
 deactivate
 ```
 
@@ -27,7 +27,7 @@ deactivate
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
-pip install https://github.com/up-n-atom/sagemcom-modem-scripts/releases/download/v0.0.6/xmo_remote_client-0.0.6-py3-none-any.whl
+pip install https://github.com/up-n-atom/sagemcom-modem-scripts/releases/download/v0.0.6/xmo_remote_client-0.0.7-py3-none-any.whl
 deactivate
 ```
 
@@ -48,17 +48,21 @@ Usage: python -m xmo [OPTIONS] COMMAND1 [ARGS]... [COMMAND2 [ARGS]...]...
 Options:
   -H, --host IPV4ADDRESS          Hostname or host IP
   -u, --username TEXT             Administrator username
-  -p, --password TEXT             Administrator password  [required]
-  -a, --auth-method [MD5|SHA512]  Authentication method
+  -p, --password TEXT             Administrator password
+  -a, --auth-method [MD5|MD5_NONCE|SHA512]
+                                  Authentication method
+  --version                       Show the version and exit.
   --help                          Show this message and exit.
 
 Commands:
   disable-advanced-dmz
   disable-wifi-radios
   enable-advanced-dmz
+  flush-log
   get-onu-mode
   get-value
   get-wan-mode
+  read-log
   set-dns-servers
   set-value
 ```
@@ -89,4 +93,8 @@ xmo-remote-client get-onu-mode
 # Get multiple values ie. OLT info
 xmo-remote-client get-value --path "Device/Optical/G988/General/OltG/OltVendorId" --path "Device/Optical/G988/General/OltG/Version"
 deactivate
+# Read system log
+xmo-remote-client read-log
+# Flush system log
+xmo-remote-client flush-log
 ```
