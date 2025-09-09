@@ -32,7 +32,7 @@ async def read_log(client: SagemcomClient) -> None:
         }
         response = await client._SagemcomClient__api_request_async([actions], False)
         data = client._SagemcomClient__get_response(response)
-        api_host = f"{client.protocol}://{client.host}/{data['uri']}?_={time.time_ns()}"
+        api_host = f"{client.protocol}://{client.host}{data['uri']}?_={time.time_ns()}"
         async with client.session.get(api_host) as response:
             async for line in response.content:
                 click.echo(line, nl=False)
