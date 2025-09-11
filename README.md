@@ -73,7 +73,6 @@ Commands:
 > The **Home Hub 4000** uses `MD5` authentication, which can be enabled using either `-a` _or_ `--auth-method` option, eg. `-a MD5`
 
 ```bash
-source .venv/bin/activate
 # List available commands
 xmo-remote-client --help
 # Dump Device tree
@@ -84,6 +83,8 @@ xmo-remote-client get-wan-mode
 xmo-remote-client set-dns-servers -s 192.168.2.254 192.168.2.254
 # Disable 5G and 2.4G radios
 xmo-remote-client disable-wifi-radios -r RADIO5G -r RADIO2G4
+# Disable all radios
+xmo-remote-client disable-wifi-radios --radios all
 # Disable radio w/ radio prompt
 xmo-remote-client disable-wifi-radios
 # Enable advanced DMZ w/ MAC address prompt
@@ -92,7 +93,6 @@ xmo-remote-client enable-advanced-dmz
 xmo-remote-client get-onu-mode
 # Get multiple values ie. OLT info
 xmo-remote-client get-value --path "Device/Optical/G988/General/OltG/OltVendorId" --path "Device/Optical/G988/General/OltG/Version"
-deactivate
 # Read system log
 xmo-remote-client read-log
 # Flush system log
