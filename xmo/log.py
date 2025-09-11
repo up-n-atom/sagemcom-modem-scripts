@@ -23,18 +23,18 @@ async def read_log(client: SagemcomClient) -> None:
         # uncertain if this api is universally supported by the xmo protocol... contain and
         # improperly access the private methods of the sagemcom_api client here for now
         actions = {
-            "id": 0,
-            "method": "getVendorLogDownloadURI",
-            "xpath": "Device/DeviceInfo/VendorLogFiles/VendorLogFile",
-            "parameters": {
-                "FileName": "utilsLogFile",
+            'id': 0,
+            'method': 'getVendorLogDownloadURI',
+            'xpath': 'Device/DeviceInfo/VendorLogFiles/VendorLogFile',
+            'parameters': {
+                'FileName': 'utilsLogFile',
             },
-            "event-id": "1",
+            'event-id': '1',
         }
         response = await client._SagemcomClient__api_request_async([actions], False)
         data = client._SagemcomClient__get_response(response)
-        api_host = f"{client.protocol}://{client.host}{data['uri']}?_={time.time_ns()}"
-        async with client.session.get(api_host) as response:
+        url = f"{client.protocol}://{client.host}{data['uri']}?_={time.time_ns()}"
+        async with client.session.get(url) as response:
             async for line in response.content:
                 click.echo(line, nl=False)
     except Exception as e:

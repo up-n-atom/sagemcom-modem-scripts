@@ -10,19 +10,20 @@ from . import xmo
 async def disable_wifi_radios(client: SagemcomClient, radios: tuple[str] | list[str]) -> None:
     try:
         _radios = await client.get_value_by_xpath('Device/WiFi/Radios')
-        active_radios = {radio['alias'] for radio in _radios \
+        # get active radios
+        _radios = {radio['alias'] for radio in _radios \
             if radio.keys() >= {'alias', 'enable'} and \
             radio['enable']}
-        if not active_radios:
+        if not _radios:
             click.echo('No active radios')
             return
         if not radios:
-            radios = click.prompt('Choose radio', type=click.Choice(active_radios), show_choices=True),
-        invalid_radios = set(radios) - active_radios
-        if invalid_radios:
-            raise click.BadParameter("Invalid radio(s): {0}".format(", ".join(invalid_radios)))
-        disable_radios = set(radios) & active_radios
-        for alias in disable_radios:
+            radios = click.prompt('Choose radio', type=click.Choice(list(_radios) + ['all']), show_choices=True),
+        if 'all' not in radios:
+            if invalid_radios := set(radios) - _radios:
+                raise click.BadParameter("Invalid radio(s): {0}".format(", ".join(invalid_radios)))
+            _radios = set(radios) & _radios
+        for alias in _radios:
             await client.set_value_by_xpath(f"Device/WiFi/Radios/Radio[Alias='{alias}']/Enable", False)
     except Exception as e:
         client.echo(e, err=True)

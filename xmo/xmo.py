@@ -13,7 +13,7 @@ from . import __version__
 
 
 class EnumChoice(click.Choice):
-    def __init__(self, enum: Enum, case_sensitive=False):
+    def __init__(self, enum: Enum, case_sensitive: bool = False):
         self.__enum = enum
         super().__init__(choices=[item.value for item in enum], case_sensitive=case_sensitive)
 
@@ -79,11 +79,15 @@ async def set_value(ctx: click.Context, path: str, value: str) -> None:
 
 
 @asynccontextmanager
-async def flipflop(xpath: str) -> None:
+async def flipflop(xpath: str, value: bool | None = False) -> None:
+    def to_bool(value) -> bool:
+        return isinstance(value, str) and value.lower() in ('true', 'on', '1')
     if (client := click.get_current_context().find_object(SagemcomClient)) is None:
         raise ValueError('client not found')
-    await client.set_value_by_xpath(xpath, False)
+    if value is None:
+        value = not to_bool(await client.get_value_by_xpat(xpath))
+    await client.set_value_by_xpath(xpath, value)
     try:
         yield client
     finally:
-        await client.set_value_by_xpath(xpath, True)
+        await client.set_value_by_xpath(xpath, not value)
