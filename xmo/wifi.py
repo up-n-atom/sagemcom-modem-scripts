@@ -7,9 +7,9 @@ from . import xmo
 async def _toggle_wifi_radios(client: SagemcomClient, radios: tuple[str] | list[str], status: bool) -> None:
     try:
         _radios = await client.get_value_by_xpath('Device/WiFi/Radios')
-        _radios = {radio['alias'] for radio in _radios \
-            if radio.keys() >= {'alias', 'enable'} and \
-            radio['enable'] == status}
+        _radios = {radio['Alias'] for radio in _radios \
+            if radio.keys() >= {'Alias', 'Enable'} and \
+            radio['Enable'] == status}
         if not _radios:
             click.echo('No active radios' if status else 'No inactive radios')
             return

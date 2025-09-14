@@ -12,6 +12,24 @@ from sagemcom_api.enums import EncryptionMethod
 from . import __version__
 
 
+def __patch_get_response_value(self, response, index=0):
+    try:
+        value = self._SagemcomClient__get_response(response, index)["value"]
+    except (KeyError, IndexError):
+        value = None
+    return value
+
+try:
+    # monkey-patch out decamelize as it breaks path discovery
+    SagemcomClient._SagemcomClient__get_response_value = __patch_get_response_value
+    # remove methods that rely on decamelize and/or serve no purpose ie. decoupling client from "Device"
+    del SagemcomClient.get_device_info
+    del SagemcomClient.get_hosts
+    del SagemcomClient.get_port_mappings
+except AttributeError:
+    exit('Failed to patch SagemcomClient API')
+
+
 class EnumChoice(click.Choice):
     def __init__(self, enum: Enum, case_sensitive: bool = False):
         self.__enum = enum
