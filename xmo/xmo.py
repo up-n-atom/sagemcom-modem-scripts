@@ -10,6 +10,7 @@ import asyncclick as click
 from aiohttp import ClientSession, ClientTimeout
 from aiohttp.connector import TCPConnector
 import backoff
+from dicttoxml import dicttoxml
 import dpath
 from sagemcom_api.client import SagemcomClient, retry_login
 from sagemcom_api.enums import EncryptionMethod
@@ -136,9 +137,8 @@ async def get_value(ctx: click.Context, path: list[str], fmt: str) -> None:
                         click.echo(toml.dumps(value))
                     case 'xml':
                         click.echo(parseString(
-                            dicttoxml.dicttoxml(value, xml_declaration=False, attr_type=False, return_bytes=False)
-                        ).toprettyxml()
-                        )
+                            dicttoxml(value, xml_declaration=False, attr_type=False, return_bytes=False)
+                        ).toprettyxml())
                     case _:
                         click.echo(json.dumps(value, indent=2))
             else:
