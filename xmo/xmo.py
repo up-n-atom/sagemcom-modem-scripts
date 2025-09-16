@@ -13,6 +13,8 @@ import dpath
 from sagemcom_api.client import SagemcomClient, retry_login
 from sagemcom_api.enums import EncryptionMethod
 from sagemcom_api.exceptions import AuthenticationException, LoginRetryErrorException, LoginTimeoutException, InvalidSessionException
+import toml
+import yaml
 
 from . import __version__
 
@@ -110,8 +112,11 @@ async def cli(ctx: click.Context, host: IPv4Address, username: str, password: st
 
 @cli.command()
 @click.option('--path', required=True, multiple=True)
+@click.option('--format', 'fmt',
+    default='json', type=click.Choice(['json', 'yaml', 'toml'], case_sensitive=False), show_default=True,
+    help="Output format")
 @click.pass_context
-async def get_value(ctx: click.Context, path: list[str]) -> None:
+async def get_value(ctx: click.Context, path: list[str], fmt: str) -> None:
     client = ctx.find_object(SagemcomClient)
     if client is None:
         ctx.fail('Client not found')
@@ -122,7 +127,16 @@ async def get_value(ctx: click.Context, path: list[str]) -> None:
             click.echo(e, err=True)
             continue
         else:
-            click.echo(json.dumps(value, indent=2))
+            if isinstance(value, Iterable) and not isinstance(value, (str, bytes, bytearray)):
+                match fmt:
+                    case 'yaml':
+                        click.echo(yaml.safe_dump(value))
+                    case 'toml':
+                        click.echo(toml.dumps(value))
+                    case _:
+                        click.echo(json.dumps(value, indent=2))
+            else:
+                click.echo(value)
 
 
 @cli.command()

@@ -3,4 +3,5 @@ asyncclick
 backoff
 dpath
 sagemcom_api>=1.1.0
+toml
 pyaml
