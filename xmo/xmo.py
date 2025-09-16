@@ -44,8 +44,8 @@ class XmoClient(SagemcomClient):
 
     # Could monkey-patch SagemcomClient.__get_response_value here, maybe later...
 
-    # Fix quoting xpaths - it's missing '@' in safe param within SagemcomClient.get_value_by_xpath and
-    # totally broken within SagemcomClient.get_values_by_xpaths. Also, Dont Repeat Yourself!!!
+    # Fix quoting xpaths - it's missing '@' as a safe char within SagemcomClient.get_value_by_xpath, and
+    # quoting is totally broken within SagemcomClient.get_values_by_xpaths. Also, Dont Repeat Yourself!!
     @backoff.on_exception(
         backoff.expo,
         (
