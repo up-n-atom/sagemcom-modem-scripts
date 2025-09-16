@@ -1,8 +1,9 @@
+from collections.abc import Awaitable, Callable, Iterable, Mapping
 from contextlib import asynccontextmanager
 from enum import Enum, StrEnum
 from ipaddress import IPv4Address
 import json
-from typing import Any, Awaitable, Callable
+from typing import Any
 
 import asyncclick as click
 from aiohttp import ClientSession, ClientTimeout
@@ -52,7 +53,7 @@ class XmoClient(SagemcomClient):
         max_tries=1,
         on_backoff=retry_login,
     )
-    async def get_values_by_xpaths(self, xpaths, options: dict | None = None) -> dict:
+    async def get_values_by_xpaths(self, xpaths: Iterable[str] | Mapping[str, str], options: dict | None = None) -> dict:
         actions = [
             {
                 'id': i,
@@ -64,10 +65,10 @@ class XmoClient(SagemcomClient):
         ]
         response = await self._SagemcomClient__api_request_async(actions, False)
         values = dpath.values(response, 'reply/actions/*/callbacks/*/parameters/value')
-        return dict(zip(xpaths.keys() if isinstance(xpaths, dict) else range(len(xpaths)), values))
+        return dict(zip(xpaths.keys() if isinstance(xpaths, dict) else xpaths, values))
 
     async def get_value_by_xpath(self, xpath: str, options: dict | None = None) -> Any:
-        return (await self.get_values_by_xpaths([xpath], options))[0]
+        return (await self.get_values_by_xpaths([xpath], options))[xpath]
 
 
 class EnumChoice(click.Choice):
