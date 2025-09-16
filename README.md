@@ -65,6 +65,38 @@ Commands:
   read-log
   set-dns-servers
   set-value
+
+
+Usage: python -m xmo get-value [OPTIONS]
+
+Options:
+  --path TEXT                [required]
+  --format [json|yaml|toml]  Output format  [default: json]
+  --help                     Show this message and exit.
+
+
+Usage: python -m xmo disable-wifi-radios [OPTIONS]
+
+Options:
+  -r, --radios TEXT
+  --help             Show this message and exit.
+
+
+Usage: python -m xmo set-dns-servers [OPTIONS]
+
+Options:
+  -s, --dns-servers IPV4ADDRESS...
+                                  [required]
+  --help                          Show this message and exit.
+
+
+Usage: python -m xmo set-value [OPTIONS]
+
+Options:
+  --path TEXT   [required]
+  --value TEXT  [required]
+  --help        Show this message and exit.
+
 ```
 
 ### Bell Home/Giga Hub Examples
@@ -75,8 +107,14 @@ Commands:
 ```bash
 # List available commands
 xmo-remote-client --help
-# Dump Device tree
+# Dump Device tree as json
 xmo-remote-client get-value --path "Device"
+# Dump Device tree as yaml
+xmo-remote-client get-value --path "Device" --format yaml
+# Dump Device tree as toml
+xmo-remote-client get-value --path "Device" --format yaml
+# Dump Device tree as paths only with the help of jq
+xmo-remote-client get-value --path "Device" | jq -r 'def uid: (select(type == "number") | "[@uid=\(.)]") // .; paths | map(uid) | join("\/")'
 # Get WAN mode
 xmo-remote-client get-wan-mode
 # Enable local DNS server ie. Pi-hole
@@ -97,4 +135,5 @@ xmo-remote-client get-value --path "Device/Optical/G988/General/OltG/OltVendorId
 xmo-remote-client read-log
 # Flush system log
 xmo-remote-client flush-log
+
 ```
