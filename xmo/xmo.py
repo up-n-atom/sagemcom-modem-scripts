@@ -7,8 +7,11 @@ from typing import Any, Awaitable, Callable
 import asyncclick as click
 from aiohttp import ClientSession, ClientTimeout
 from aiohttp.connector import TCPConnector
-from sagemcom_api.client import SagemcomClient
+import backoff
+import dpath
+from sagemcom_api.client import SagemcomClient, retry_login
 from sagemcom_api.enums import EncryptionMethod
+from sagemcom_api.exceptions import AuthenticationException, LoginRetryErrorException, LoginTimeoutException, InvalidSessionException
 
 from . import __version__
 
@@ -20,6 +23,7 @@ def __patch_get_response_value(self, response: Any, index: int = 0) -> Any:
         value = None
     return value
 
+
 try:
     # monkey-patch out decamelize as it breaks path discovery
     SagemcomClient._SagemcomClient__get_response_value = __patch_get_response_value
@@ -29,6 +33,41 @@ try:
     del SagemcomClient.get_port_mappings
 except AttributeError:
     exit('Failed to patch SagemcomClient API')
+
+
+class XmoClient(SagemcomClient):
+
+    # Could monkey-patch SagemcomClient.__get_response_value here, maybe later...
+
+    # Fix quoting xpaths - it's missing '@' in safe param within SagemcomClient.get_value_by_xpath and
+    # totally broken within SagemcomClient.get_values_by_xpaths. Also, Dont Repeat Yourself!!!
+    @backoff.on_exception(
+        backoff.expo,
+        (
+            AuthenticationException,
+            LoginRetryErrorException,
+            LoginTimeoutException,
+            InvalidSessionException,
+        ),
+        max_tries=1,
+        on_backoff=retry_login,
+    )
+    async def get_values_by_xpaths(self, xpaths, options: dict | None = None) -> dict:
+        actions = [
+            {
+                'id': i,
+                'method': 'getValue',
+                'xpath': urllib.parse.quote(xpath, "/=[]'@"),
+                'options': options if options else {},
+            }
+            for i, xpath in enumerate(xpaths.values() if isinstance(xpaths, dict) else xpaths)
+        ]
+        response = await self._SagemcomClient__api_request_async(actions, False)
+        values = dpath.values(response, 'reply/actions/*/callbacks/*/parameters/value')
+        return dict(zip(xpaths.keys() if isinstance(xpaths, dict) else range(len(xpaths)), values))
+
+    async def get_value_by_xpath(self, xpath: str, options: dict | None = None) -> Any:
+        return (await self.get_values_by_xpaths([xpath], options))[0]
 
 
 class EnumChoice(click.Choice):
