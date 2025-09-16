@@ -112,7 +112,7 @@ xmo-remote-client get-value --path "Device"
 # Dump Device tree as yaml
 xmo-remote-client get-value --path "Device" --format yaml
 # Dump Device tree as toml
-xmo-remote-client get-value --path "Device" --format yaml
+xmo-remote-client get-value --path "Device" --format toml
 # Dump Device tree as paths only with the help of jq
 xmo-remote-client get-value --path "Device" | jq -r 'def uid: (select(type == "number") | "[@uid=\(.)]") // .; paths | map(uid) | join("\/")'
 # Get WAN mode
