@@ -4,6 +4,7 @@ from enum import Enum, StrEnum
 from ipaddress import IPv4Address
 import json
 from typing import Any
+from xml.dom.minidom import parseString
 
 import asyncclick as click
 from aiohttp import ClientSession, ClientTimeout
@@ -113,7 +114,7 @@ async def cli(ctx: click.Context, host: IPv4Address, username: str, password: st
 @cli.command()
 @click.option('--path', required=True, multiple=True)
 @click.option('--format', 'fmt',
-    default='json', type=click.Choice(['json', 'yaml', 'toml'], case_sensitive=False), show_default=True,
+    default='json', type=click.Choice(['json', 'yaml', 'toml', 'xml'], case_sensitive=False), show_default=True,
     help="Output format")
 @click.pass_context
 async def get_value(ctx: click.Context, path: list[str], fmt: str) -> None:
@@ -133,6 +134,11 @@ async def get_value(ctx: click.Context, path: list[str], fmt: str) -> None:
                         click.echo(yaml.safe_dump(value))
                     case 'toml':
                         click.echo(toml.dumps(value))
+                    case 'xml':
+                        click.echo(parseString(
+                            dicttoxml.dicttoxml(value, xml_declaration=False, attr_type=False, return_bytes=False)
+                        ).toprettyxml()
+                        )
                     case _:
                         click.echo(json.dumps(value, indent=2))
             else:

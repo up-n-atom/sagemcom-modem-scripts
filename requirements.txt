@@ -1,6 +1,7 @@
 anyio
 asyncclick
 backoff
+dicttoxml
 dpath
 sagemcom_api>=1.1.0
 toml
