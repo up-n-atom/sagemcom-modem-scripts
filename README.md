@@ -99,7 +99,7 @@ Options:
 
 ```
 
-### Bell Home/Giga Hub Examples
+### Example Usage
 
 > [!NOTE]
 > The **Home Hub 4000** uses `MD5` authentication, which can be enabled using either `-a` _or_ `--auth-method` option, eg. `-a MD5`
