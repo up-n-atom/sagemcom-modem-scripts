@@ -70,9 +70,9 @@ Commands:
 Usage: python -m xmo get-value [OPTIONS]
 
 Options:
-  --path TEXT                [required]
-  --format [json|yaml|toml]  Output format  [default: json]
-  --help                     Show this message and exit.
+  --path TEXT                    [required]
+  --format [json|yaml|toml|xml]  Output format  [default: json]
+  --help                         Show this message and exit.
 
 
 Usage: python -m xmo disable-wifi-radios [OPTIONS]
