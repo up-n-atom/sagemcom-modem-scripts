@@ -10,6 +10,7 @@ async def get_onu_mode(ctx: click.Context) -> None:
 
 
 @xmo.cli.command()
+@xmo.restrict(*xmo.BELL_MODELS)
 @click.pass_context
 async def get_wan_mode(ctx: click.Context) -> None:
     await ctx.invoke(xmo.get_value, path=['Device/Services/BellNetworkCfg/WanMode'])

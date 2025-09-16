@@ -13,6 +13,7 @@ def _validate_mac_address(ctx: click.Context, param: click.Parameter, value: str
 
 
 @xmo.cli.command()
+@xmo.restrict(*xmo.BELL_MODELS)
 @click.option('-m', '--mac-address', callback=_validate_mac_address, prompt='MAC Address')
 @click.pass_context
 async def enable_advanced_dmz(ctx: click.Context, mac_address: str) -> None:
@@ -24,6 +25,7 @@ async def enable_advanced_dmz(ctx: click.Context, mac_address: str) -> None:
 
 
 @xmo.cli.command()
+@xmo.restrict(*xmo.BELL_MODELS)
 @click.pass_context
 async def disable_advanced_dmz(ctx: click.Context) -> None:
     await ctx.invoke(xmo.set_value, path='Device/Services/BellNetworkCfg/AdvancedDMZ/Enable', value=False)

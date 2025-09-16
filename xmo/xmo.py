@@ -1,7 +1,8 @@
 from contextlib import asynccontextmanager
-from enum import Enum
+from enum import Enum, StrEnum
 from ipaddress import IPv4Address
 import json
+from typing import Any, Awaitable, Callable
 
 import asyncclick as click
 from aiohttp import ClientSession, ClientTimeout
@@ -12,7 +13,7 @@ from sagemcom_api.enums import EncryptionMethod
 from . import __version__
 
 
-def __patch_get_response_value(self, response, index=0):
+def __patch_get_response_value(self, response: Any, index: int = 0) -> Any:
     try:
         value = self._SagemcomClient__get_response(response, index)["value"]
     except (KeyError, IndexError):
@@ -31,7 +32,7 @@ except AttributeError:
 
 
 class EnumChoice(click.Choice):
-    def __init__(self, enum: Enum, case_sensitive: bool = False):
+    def __init__(self, enum: Enum, case_sensitive: bool = False) -> None:
         self.__enum = enum
         super().__init__(choices=[item.value for item in enum], case_sensitive=case_sensitive)
 
@@ -53,7 +54,7 @@ class EnumChoice(click.Choice):
 @click.pass_context
 async def cli(ctx: click.Context, host: IPv4Address, username: str, password: str, auth_method: EncryptionMethod) -> None:
     ctx.obj = client = await ctx.with_async_resource(
-        SagemcomClient(host, username, password, auth_method,
+        XmoClient(host, username, password, auth_method,
             ClientSession(
                 headers={"User-Agent": "XMO_REMOTE_CLIENT/1.0.0"},
                 timeout=ClientTimeout(),
@@ -71,8 +72,9 @@ async def cli(ctx: click.Context, host: IPv4Address, username: str, password: st
 @click.option('--path', required=True, multiple=True)
 @click.pass_context
 async def get_value(ctx: click.Context, path: list[str]) -> None:
-    if (client := ctx.find_object(SagemcomClient)) is None:
-        return
+    client = ctx.find_object(SagemcomClient)
+    if client is None:
+        ctx.fail('Client not found')
     for _path in path:
         try:
             value = await client.get_value_by_xpath(_path)
@@ -88,8 +90,9 @@ async def get_value(ctx: click.Context, path: list[str]) -> None:
 @click.option('--value', required=True)
 @click.pass_context
 async def set_value(ctx: click.Context, path: str, value: str) -> None:
-    if (client := ctx.find_object(SagemcomClient)) is None:
-        return
+    client = ctx.find_object(SagemcomClient)
+    if client is None:
+        ctx.fail('Client not found')
     try:
         value = await client.set_value_by_xpath(path, value)
     except Exception as e:
@@ -100,8 +103,9 @@ async def set_value(ctx: click.Context, path: str, value: str) -> None:
 async def flipflop(xpath: str, value: bool | None = False) -> None:
     def to_bool(value) -> bool:
         return isinstance(value, str) and value.lower() in ('true', 'on', '1')
-    if (client := click.get_current_context().find_object(SagemcomClient)) is None:
-        raise ValueError('client not found')
+    client = click.get_current_context().find_object(SagemcomClient)
+    if client is None:
+        raise ValueError('Client not found')
     if value is None:
         value = not to_bool(await client.get_value_by_xpat(xpath))
     await client.set_value_by_xpath(xpath, value)
@@ -109,3 +113,38 @@ async def flipflop(xpath: str, value: bool | None = False) -> None:
         yield client
     finally:
         await client.set_value_by_xpath(xpath, not value)
+
+
+class Model(StrEnum):
+    FAST5250 = '5250'
+    FAST5566 = '5566'
+    FAST5689 = '5689'
+    FAST5690 = '5690'
+    FAST5697 = '5697'
+
+BELL_MODELS = frozenset({Model.FAST5250, Model.FAST5566, Model.FAST5689, Model.FAST5690, Model.FAST5697})
+
+
+AsyncCallable = Callable[..., Awaitable[None]]
+
+
+def restrict(*models: Model | str) -> Callable[[AsyncCallable], AsyncCallable]:
+    if not models:
+        raise ValueError('restrict() requires at least one model')
+    models = frozenset(Model(model) for model in models)
+    def decorator(func: AsyncCallable) -> AsyncCallable:
+        @wraps(func)
+        async def wrapper(*args, **kwargs) -> None:
+            try:
+                client = click.get_current_context().find_object(SagemcomClient)
+                if client is None:
+                    raise ValueError('Client not found')
+                model = await client.get_value_by_xpath('Device/DeviceInfo/ModelName')
+                if model not in models:
+                    raise RuntimeError(f"Command not supported by model {model}")
+            except Exception as e:
+                click.echo(e, err=True)
+                raise click.Abort()
+            return await func(*args, **kwargs)
+        return wrapper
+    return decorator
