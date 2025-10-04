@@ -1,9 +1,12 @@
 from collections.abc import Awaitable, Callable, Iterable, Mapping
 from contextlib import asynccontextmanager
 from enum import Enum, StrEnum
+from functools import wraps
 from ipaddress import IPv4Address
 import json
+import sys
 from typing import Any
+import urllib
 from xml.dom.minidom import parseString
 
 import asyncclick as click
@@ -37,7 +40,7 @@ try:
     del SagemcomClient.get_hosts
     del SagemcomClient.get_port_mappings
 except AttributeError:
-    exit('Failed to patch SagemcomClient API')
+    sys.exit('Failed to patch SagemcomClient API')
 
 
 class XmoClient(SagemcomClient):
