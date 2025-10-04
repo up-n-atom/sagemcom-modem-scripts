@@ -167,7 +167,7 @@ async def flipflop(xpath: str, value: bool | None = False) -> None:
     if client is None:
         raise ValueError('Client not found')
     if value is None:
-        value = not to_bool(await client.get_value_by_xpat(xpath))
+        value = not to_bool(await client.get_value_by_xpath(xpath))
     await client.set_value_by_xpath(xpath, value)
     try:
         yield client
