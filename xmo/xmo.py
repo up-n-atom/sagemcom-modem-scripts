@@ -77,6 +77,19 @@ class XmoClient(SagemcomClient):
     async def get_value_by_xpath(self, xpath: str, options: dict | None = None) -> Any:
         return (await self.get_values_by_xpaths([xpath], options))[xpath]
 
+    async def set_value_by_xpath(self, xpath: str, value: str, options: dict | None = None) -> dict:
+        actions = {
+            'id': 0,
+            'method': 'setValue',
+            'xpath': urllib.parse.quote(xpath, "/=[]'@"),
+            'parameters': {'value': str(value)},
+            'options': options if options else {},
+        }
+
+        response = await self._SagemcomClient__api_request_async([actions], False)
+
+        return response
+
 
 class EnumChoice(click.Choice):
     def __init__(self, enum: Enum, case_sensitive: bool = False) -> None:
