@@ -11,7 +11,7 @@ async def _toggle_wifi_radios(client: SagemcomClient, radios: tuple[str] | list[
             if radio.keys() >= {'Alias', 'Enable'} and \
             radio['Enable'] == status}
         if not _radios:
-            click.echo('No active radios' if status else 'No inactive radios')
+            await click.echo('No active radios' if status else 'No inactive radios')
             return
         if not radios:
             radios = await click.prompt('Choose radio', type=click.Choice(list(_radios) + ['all']), show_choices=True),
@@ -22,6 +22,7 @@ async def _toggle_wifi_radios(client: SagemcomClient, radios: tuple[str] | list[
         for alias in _radios:
             await client.set_value_by_xpath(f"Device/WiFi/Radios/Radio[Alias='{alias}']/Enable", not status)
     except Exception as e:
+        client.echo(e, err=True)
         raise click.Abort()
 
 
