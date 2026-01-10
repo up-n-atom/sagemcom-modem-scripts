@@ -61,8 +61,8 @@ async def enable_wifi_radios(client: SagemcomClient, radios: tuple[str] | list[s
 
 @xmo.cli.command()
 @click.option('-r', '--radios', multiple=True)
-@click.option('-p', '--parameter', required=True)
+@click.option('-a', '--attribute', required=True)
 @click.option('-v', '--value', required=True)
 @click.pass_obj
-async def set_wifi_radio_parameter(client: SagemcomClient, radios: tuple[str] | list[str], parameter: str, value) -> None:
-    await _set_wifi_radio_parameter(client, radios, parameter, value)
+async def set_wifi_radio_parameter(client: SagemcomClient, radios: tuple[str] | list[str], attribute: str, value) -> None:
+    await _set_wifi_radio_parameter(client, radios, attribute, value)
