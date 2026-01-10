@@ -22,7 +22,7 @@ async def _toggle_wifi_radios(client: SagemcomClient, radios: tuple[str] | list[
         for alias in _radios:
             await client.set_value_by_xpath(f"Device/WiFi/Radios/Radio[Alias='{alias}']/Enable", not status)
     except Exception as e:
-        client.echo(e, err=True)
+        click.echo(e, err=True)
         raise click.Abort()
     
     
@@ -42,7 +42,7 @@ async def _set_wifi_radio_attribute(client: SagemcomClient, radios: tuple[str] |
         for alias in _radios:
             await client.set_value_by_xpath(f"Device/WiFi/Radios/Radio[Alias='{alias}']/{attribute}", value)
     except Exception as e:
-        client.echo(e, err=True)
+        click.echo(e, err=True)
         raise click.Abort()
 
 
