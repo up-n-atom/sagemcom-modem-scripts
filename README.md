@@ -57,6 +57,8 @@ Options:
 Commands:
   disable-advanced-dmz
   disable-wifi-radios
+  enable-wifi-radios
+  set-wifi-radio-attribute
   enable-advanced-dmz
   flush-log
   get-onu-mode
@@ -81,6 +83,13 @@ Options:
   -r, --radios TEXT
   --help             Show this message and exit.
 
+Usage: python -m xmo set-wifi-radio-attribute [OPTIONS]
+
+Options:
+  -r, --radios TEXT
+  -a, --attribute TEXT  [required]
+  -v, --value TEXT      [required]
+  --help                Show this message and exit.
 
 Usage: python -m xmo set-dns-servers [OPTIONS]
 
@@ -126,7 +135,7 @@ xmo-remote-client disable-wifi-radios --radios all
 # Disable radio w/ radio prompt
 xmo-remote-client disable-wifi-radios
 # Set radio attribute (example: change transmit power)
-xmo-remote-client set-wifi-radio-attribue --radios --atribute "TransmitPower" --value 0
+xmo-remote-client set-wifi-radio-attribute --radios all --atribute "TransmitPower" --value 0
 # Enable advanced DMZ w/ MAC address prompt
 xmo-remote-client enable-advanced-dmz
 # Get ONU mode
