@@ -125,6 +125,8 @@ xmo-remote-client disable-wifi-radios -r RADIO5G -r RADIO2G4
 xmo-remote-client disable-wifi-radios --radios all
 # Disable radio w/ radio prompt
 xmo-remote-client disable-wifi-radios
+# Set radio attribute (example: change transmit power)
+xmo-remote-client set-wifi-radio-attribue --radios --atribute "TransmitPower" --value 0
 # Enable advanced DMZ w/ MAC address prompt
 xmo-remote-client enable-advanced-dmz
 # Get ONU mode
