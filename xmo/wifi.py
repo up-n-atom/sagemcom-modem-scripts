@@ -26,10 +26,10 @@ async def _toggle_wifi_radios(client: SagemcomClient, radios: tuple[str] | list[
         raise click.Abort()
     
     
-async def _set_wifi_radio_parameter(client: SagemcomClient, radios: tuple[str] | list[str], parameter: str, value) -> None:
+async def _set_wifi_radio_attribute(client: SagemcomClient, radios: tuple[str] | list[str], attribute: str, value) -> None:
     try:
         _radios = await client.get_value_by_xpath('Device/WiFi/Radios')
-        _radios = {radio['Alias'] for radio in _radios if radio.keys() >= {'Alias', parameter}}
+        _radios = {radio['Alias'] for radio in _radios if radio.keys() >= {'Alias', attribute}}
         if not _radios:
             await click.echo('No radios found')
             return
@@ -40,7 +40,7 @@ async def _set_wifi_radio_parameter(client: SagemcomClient, radios: tuple[str] |
                 raise click.BadParameter("Invalid radio(s): {0}".format(", ".join(invalid_radios)))
             _radios = set(radios) & _radios
         for alias in _radios:
-            await client.set_value_by_xpath(f"Device/WiFi/Radios/Radio[Alias='{alias}']/{parameter}", value)
+            await client.set_value_by_xpath(f"Device/WiFi/Radios/Radio[Alias='{alias}']/{attribute}", value)
     except Exception as e:
         client.echo(e, err=True)
         raise click.Abort()
@@ -64,5 +64,5 @@ async def enable_wifi_radios(client: SagemcomClient, radios: tuple[str] | list[s
 @click.option('-a', '--attribute', required=True)
 @click.option('-v', '--value', required=True)
 @click.pass_obj
-async def set_wifi_radio_parameter(client: SagemcomClient, radios: tuple[str] | list[str], attribute: str, value) -> None:
-    await _set_wifi_radio_parameter(client, radios, attribute, value)
+async def set_wifi_radio_attribute(client: SagemcomClient, radios: tuple[str] | list[str], attribute: str, value) -> None:
+    await _set_wifi_radio_attribute(client, radios, attribute, value)
